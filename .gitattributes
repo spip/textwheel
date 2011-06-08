@@ -21,6 +21,7 @@ wheels/spip/ecrire.yaml -text
 wheels/spip/interdire-scripts.yaml -text
 wheels/spip/spip-listes.php -text
 wheels/spip/spip-listes.yaml -text
+wheels/spip/spip-paragrapher.php -text
 wheels/spip/spip-paragrapher.yaml -text
 wheels/spip/spip-poesie.yaml -text
 wheels/spip/spip-tableaux.php -text

@@ -12,6 +12,7 @@ lib/yaml/sfYaml.php -text
 lib/yaml/sfYamlDumper.php -text
 lib/yaml/sfYamlInline.php -text
 lib/yaml/sfYamlParser.php -text
+modeles/dist.html -text
 /plugin.xml -text
 /textwheel-64.png -text
 typographie/en.php -text

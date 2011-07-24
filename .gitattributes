@@ -14,7 +14,7 @@ lib/yaml/sfYamlInline.php -text
 lib/yaml/sfYamlParser.php -text
 modeles/dist.html -text
 /plugin.xml -text
-/textwheel-64.png -text
+/textwheel-32.png -text
 typographie/en.php -text
 typographie/fr.php -text
 wheels/spip/echappe-js.yaml -text

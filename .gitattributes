@@ -9,6 +9,7 @@ inc/texte.php -text
 inc/textwheel.php -text
 inc/yaml-mini.php -text
 lang/paquet-tw.xml -text
+lang/paquet-tw_ar.php -text
 lang/paquet-tw_en.php -text
 lang/paquet-tw_sk.php -text
 lib/yaml/sfYaml.php -text

@@ -15,11 +15,15 @@ lang/paquet-tw_fa.php -text
 lang/paquet-tw_it.php -text
 lang/paquet-tw_ru.php -text
 lang/paquet-tw_sk.php -text
+lang/tw_fr.php -text
 lib/yaml/sfYaml.php -text
 lib/yaml/sfYamlDumper.php -text
 lib/yaml/sfYamlInline.php -text
 lib/yaml/sfYamlParser.php -text
 modeles/dist.html -text
+prive/themes/spip/images/br-auto-10.png -text
+prive/themes/spip/images/br-manuel-10.png -text
+prive/themes/spip/images/br-no-10.png -text
 /textwheel-32.png -text
 typographie/en.php -text
 typographie/fr.php -text

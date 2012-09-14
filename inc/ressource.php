@@ -10,7 +10,6 @@ define('_EXTRAIRE_RESSOURCES', ',' . '<"?(https?://|[\w -]+\.[\w -]+)[^<]*>'.',U
 
 
 function traiter_ressources($r) {
-	var_dump($r);
 	if ($ressource = charger_fonction('ressource', 'inc', true)) {
 		$html = $ressource($r[0]);
 	} else {

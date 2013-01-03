@@ -5,6 +5,7 @@ if (!defined('_ECRIRE_INC_VERSION')) return;
 # require_once 'engine/textwheel.php';
 
 function tw_liste_init($t){
+	charger_fonction('dummy', 'inc', true); // ne sert a rien mais evite un segmentation fault PHP, on dirait
 	return tw_liste_item($t,'init');
 }
 

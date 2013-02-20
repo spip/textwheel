@@ -21,6 +21,7 @@ lang/paquet-tw_lb.php -text
 lang/paquet-tw_nl.php -text
 lang/paquet-tw_ru.php -text
 lang/paquet-tw_sk.php -text
+lang/tw.xml -text
 lang/tw_fr.php -text
 lib/yaml/sfYaml.php -text
 lib/yaml/sfYamlDumper.php -text

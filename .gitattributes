@@ -27,6 +27,7 @@ lang/tw.xml -text
 lang/tw_en.php -text
 lang/tw_es.php -text
 lang/tw_fr.php -text
+lang/tw_nl.php -text
 lib/yaml/sfYaml.php -text
 lib/yaml/sfYamlDumper.php -text
 lib/yaml/sfYamlInline.php -text

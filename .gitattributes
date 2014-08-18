@@ -6,6 +6,7 @@ inc/autoliens.php -text
 inc/lien.php -text
 inc/memoization-mini.php -text
 inc/notes.php -text
+inc/ressource-mini.php -text
 inc/ressource.php -text
 inc/texte.php -text
 inc/textwheel.php -text

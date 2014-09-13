@@ -65,7 +65,7 @@ tests/data/base/email.txt -text
 tests/data/base/emphasis.html -text
 tests/data/base/emphasis.txt -text
 tests/data/base/escaping.html -text
-tests/data/base/escaping.txt_ -text
+tests/data/base/escaping.txt -text
 tests/data/base/fenced_code_block.html -text
 tests/data/base/fenced_code_block.txt -text
 tests/data/base/image_reference.html -text

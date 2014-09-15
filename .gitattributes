@@ -76,6 +76,8 @@ tests/data/base/inline_link_title.html -text
 tests/data/base/inline_link_title.txt -text
 tests/data/base/lazy_list.html -text
 tests/data/base/lazy_list.txt -text
+tests/data/base/math.html -text
+tests/data/base/math.txt -text
 tests/data/base/mixed_list.html -text
 tests/data/base/mixed_list.txt -text
 tests/data/base/multiline_list_paragraph.html -text

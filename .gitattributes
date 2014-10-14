@@ -36,8 +36,11 @@ lib/yaml/sfYamlInline.php -text
 lib/yaml/sfYamlParser.php -text
 modeles/dist.html -text
 prive/themes/spip/images/br-auto-10.png -text
+prive/themes/spip/images/br-auto_rtl-10.png -text
 prive/themes/spip/images/br-manuel-10.png -text
+prive/themes/spip/images/br-manuel_rtl-10.png -text
 prive/themes/spip/images/br-no-10.png -text
+prive/themes/spip/images/br-no_rtl-10.png -text
 tests/data/base/atx_heading.html -text
 tests/data/base/atx_heading.txt -text
 tests/data/base/block-level_html.html -text

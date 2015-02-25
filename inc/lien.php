@@ -362,8 +362,9 @@ function traiter_lien_explicite ($ref, $texte='', $pour='url', $connect='', $ech
 }
 
 function liens_implicite_glose_dist($texte,$id,$type,$args,$ancre,$connect=''){
-	if (function_exists($f = 'glossaire_' . $ancre))
-		$url = $f($texte, $id);
+	if ( ($ancre AND function_exists($f = 'glossaire_' . $ancre))
+	  OR function_exists($f = 'glossaire_'))
+		$url = $f($texte, $id, $ancre);
 	else
 		$url = glossaire_std($texte);
 	return $url;

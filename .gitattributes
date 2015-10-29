@@ -313,6 +313,7 @@ tests/tw_propre_typo.php -text
 /textwheel-32.png -text
 typographie/en.php -text
 typographie/fr.php -text
+wheels/spip/echappe-js.php -text
 wheels/spip/echappe-js.yaml -text
 wheels/spip/ecrire.yaml -text
 wheels/spip/interdire-scripts.yaml -text

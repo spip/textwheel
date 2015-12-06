@@ -4,7 +4,6 @@ engine/textwheelrule.php -text
 engine/textwheelruleset.php -text
 inc/autoliens.php -text
 inc/lien.php -text
-inc/memoization-mini.php -text
 inc/notes.php -text
 inc/ressource-mini.php -text
 inc/ressource.php -text

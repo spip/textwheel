@@ -304,10 +304,8 @@ tests/data/typo/unordered_list.txt -text
 tests/data/typo/whitespace.html -text
 tests/data/typo/whitespace.txt -text
 tests/simpletest/all_tests.php -text
-tests/simpletest/data_test_typo.inc -text
 tests/simpletest/lanceur_spip.php -text
 tests/simpletest/nettoyer_raccourcis_typo.php -text
-tests/simpletest/nettoyer_raccourcis_typo_old.php -text
 tests/squelettes/modeles/textwheel_block.html -text
 tests/squelettes/modeles/textwheel_inline.html -text
 tests/tw_propre.php -text

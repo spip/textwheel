@@ -83,36 +83,55 @@ function paragrapher($t, $toujours_paragrapher = null) {
  * Securite : empecher l'execution de code PHP, en le transformant en joli code
  * dans l'espace prive, cette fonction est aussi appelee par propre et typo
  * si elles sont appelees en direct
- * il ne faut pas desactiver globalement la fonction dans l'espace prive car elle protege
- * aussi les balises des squelettes qui ne passent pas forcement par propre ou typo apres
  *
- * https://code.spip.net/@interdire_scripts
+ * De la même manière, la fonction empêche l'exécution de JS mais selon le mode
+ * de protection passe en argument
+ *
+ * Il ne faut pas désactiver globalement la fonction dans l'espace privé car elle protège
+ * aussi les balises des squelettes qui ne passent pas forcement par propre ou typo après
+ * si elles sont appelées en direct
  *
  * @param string $arg
+ * @param int $mode_filtre
+ *     Mode de protection
+ *       -1 : protection dans l'espace privé et public
+ *       0  : protection dans l'espace public
+ *       1  : aucune protection
+ *     utilise la valeur de la globale filtrer_javascript si non fourni
  * @return string
  */
-function interdire_scripts($arg) {
+function interdire_scripts($arg, $mode_filtre=null) {
 	// on memorise le resultat sur les arguments non triviaux
 	static $dejavu = array();
 	static $wheel = array();
 
-	// Attention, si ce n'est pas une chaine, laisser intact
-	if (!$arg OR !is_string($arg) OR !strstr($arg, '<')) return $arg;
-	if (isset($dejavu[$GLOBALS['filtrer_javascript']][$arg])) return $dejavu[$GLOBALS['filtrer_javascript']][$arg];
+	if (is_null($mode_filtre) or !in_array($mode_filtre, array(-1, 0, 1))) {
+		$mode_filtre = $GLOBALS['filtrer_javascript'];
+	}
 
-	if (!isset($wheel[$GLOBALS['filtrer_javascript']])){
+	// Attention, si ce n'est pas une chaine, laisser intact
+	if (!$arg or !is_string($arg) or !strstr($arg, '<')) {
+		return $arg;
+	}
+	if (isset($dejavu[$mode_filtre][$arg])) {
+		return $dejavu[$mode_filtre][$arg];
+	}
+
+	if (!isset($wheel[$mode_filtre])) {
 		$ruleset = SPIPTextWheelRuleset::loader(
 			$GLOBALS['spip_wheels']['interdire_scripts']
 		);
 		// Pour le js, trois modes : parano (-1), prive (0), ok (1)
 		// desactiver la regle echappe-js si besoin
-		if ($GLOBALS['filtrer_javascript']==1
-			OR ($GLOBALS['filtrer_javascript']==0 AND !test_espace_prive()))
-			$ruleset->addRules (array('securite-js'=>array('disabled'=>true)));
-		$wheel[$GLOBALS['filtrer_javascript']] = new TextWheel($ruleset);
+		if ($mode_filtre == 1
+			or ($mode_filtre == 0 and !test_espace_prive())
+		) {
+			$ruleset->addRules(array('securite-js' => array('disabled' => true)));
+		}
+		$wheel[$mode_filtre] = new TextWheel($ruleset);
 	}
 
-	$t = $wheel[$GLOBALS['filtrer_javascript']]->text($arg);
+	$t = $wheel[$mode_filtre]->text($arg);
 
 	// Reinserer les echappements des modeles
 	if (defined('_PROTEGE_JS_MODELES'))
@@ -120,7 +139,7 @@ function interdire_scripts($arg) {
 	if (defined('_PROTEGE_PHP_MODELES'))
 		$t = echappe_retour($t,"php"._PROTEGE_PHP_MODELES);
 
-	return $dejavu[$GLOBALS['filtrer_javascript']][$arg] = $t;
+	return $dejavu[$mode_filtre][$arg] = $t;
 }
 
 

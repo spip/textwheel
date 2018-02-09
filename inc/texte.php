@@ -377,7 +377,6 @@ function traiter_tableau($bloc) {
 	$lignes = array();
 	$debut_table = $summary = '';
 	$l = 0;
-	$numeric = true;
 
 	// Traiter chaque ligne
 	$reg_line1 = ',^(\|(' . _RACCOURCI_TH_SPAN . '))+$,sS';

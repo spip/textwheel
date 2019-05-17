@@ -605,6 +605,11 @@ function personnaliser_raccourcis(&$ruleset) {
 			$rule->replace[0] = preg_replace(',<[^>]*>,Uims', $GLOBALS['debut_intertitre'], $rule->replace[0]);
 			$rule->replace[1] = preg_replace(',<[^>]*>,Uims', $GLOBALS['fin_intertitre'], $rule->replace[1]);
 			$ruleset->addRules(array('intertitres' => $rule));
+			if ($rule = $ruleset->getRule('intertitres-compliques')) {
+				$rule->replace[0] = preg_replace(',<[^>]*>,Uims', $GLOBALS['debut_intertitre'], $rule->replace[0]);
+				$rule->replace[1] = preg_replace(',<[^>]*>,Uims', $GLOBALS['fin_intertitre'], $rule->replace[1]);
+				$ruleset->addRules(array('intertitres-compliques' => $rule));
+			}
 		}
 		if (isset($GLOBALS['debut_gras']) and $rule = $ruleset->getRule('gras')) {
 			$rule->replace[0] = preg_replace(',<[^>]*>,Uims', $GLOBALS['debut_gras'], $rule->replace[0]);

@@ -462,8 +462,7 @@ function traiter_tableau($bloc) {
 	// Reperer egalement les colonnes numeriques pour les cadrer a droite
 	$rowspans = $numeric = array();
 	$k = count($lignes);
-	//$n = $k ? count($lignes[0]) : 0;
-	$n = count($lignes[0]);
+	$n = $k ? count($lignes[0]) : 0;
 
 	// distinguer les colonnes numeriques a point ou a virgule,
 	// pour les alignements eventuels sur "," ou "."

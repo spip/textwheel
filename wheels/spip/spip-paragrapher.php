@@ -23,7 +23,7 @@ if (!defined('_BALISES_BLOCS')) {
  * @param string $t
  * @return string
  */
-function detecter_liens_blocs(&$t) {
+function detecter_liens_blocs($t) {
 
 	// si une balise bloc est dans le liens, on y a aussi ajoute un <p>, il suffit donc de detecter ce dernier
 	if (strpos($t[2], "<p>") !== false) {
@@ -41,7 +41,7 @@ function detecter_liens_blocs(&$t) {
  * @param string $t
  * @return string
  */
-function fermer_para_mano(&$t) {
+function fermer_para_mano($t) {
 	# match: ",<p (.*)<(/?)(stop p|address|applet|article|aside|blockquote|button|center|d[ltd]|div|fieldset|fig(ure|caption)|footer|form|h[1-6r]|hgroup|head|header|iframe|li|map|marquee|nav|noscript|object|ol|pre|section|t(able|[rdh]|body|foot|extarea)|ul|script|style)\b,UimsS"
 	# replace: "\n<p "+trim($1)+"</p>\n<$2$3"
 

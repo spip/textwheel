@@ -382,12 +382,13 @@ function traiter_tableau($bloc) {
 	$reg_line1 = ',^(\|(' . _RACCOURCI_TH_SPAN . '))+$,sS';
 	$reg_line_all = ',^(' . _RACCOURCI_TH_SPAN . ')$,sS';
 	$hc = $hl = array();
+	$thead_ok = false;
 	foreach ($regs[1] as $ligne) {
 		$l++;
 
 		// Gestion de la premiere ligne :
-		if ($l == 1) {
-			// - <caption> et summary dans la premiere ligne :
+		if (!$thead_ok and $l == 1) {
+			// - <caption> et summary dans la premiere ligne (seulement si on n'a pas dépassé le premier thead) :
 			//   || caption | summary || (|summary est optionnel)
 			if (preg_match(',^\|\|([^|]*)(\|(.*))?$,sS', rtrim($ligne, '|'), $cap)) {
 				$cap = array_pad($cap, 4, null);
@@ -424,6 +425,7 @@ function traiter_tableau($bloc) {
 					$debut_table .= "<thead><tr class='row_first'>" .
 						$ligne . "</tr></thead>\n";
 					$l = 0;
+					$thead_ok = true;
 				}
 			}
 		}

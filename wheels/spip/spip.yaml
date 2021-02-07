@@ -111,14 +111,14 @@ intertitres-compliques:
   # raccourcis imbriques en {{{{..}}}}
   # intertitres
   match: ['/(^|[^{])[{][{][{]/S', '/[}][}][}]($|[^}])/S']
-  replace: ["$1\n\n\n<h3 class=\"spip\">", "</h3>\n\n\n$1"]
+  replace: ["$1\n\n\n<h2 class=\"spip\">", "</h2>\n\n\n$1"]
   if_str: '}}}}'
 
 intertitres:
   # raccourcis en {{{..}}}
   # intertitres
   match: ['{{{', '}}}']
-  replace: ["\n\n\n<h3 class=\"spip\">", "</h3>\n\n\n"]
+  replace: ["\n\n\n<h2 class=\"spip\">", "</h2>\n\n\n"]
   if_str: '{{{'
   type: str
 

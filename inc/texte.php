@@ -717,19 +717,22 @@ function traiter_raccourcis($t, $show_autobr = false) {
 	// car en css on ne sait pas styler l'element BR
 	if ($ignorer_autobr and _AUTOBR) {
 		if (is_null($img_br_no)) {
-			$img_br_no = ($show_autobr ? http_img_pack("br-no" . aide_lang_dir($spip_lang, $spip_lang_rtl) . "-10.png",
-				_T("tw:retour_ligne_ignore"), "class='br-no'", _T("tw:retour_ligne_ignore")) : "");
+			$img_br_no = ($show_autobr ? http_img_pack("br-no" . aide_lang_dir($spip_lang, $spip_lang_rtl) . "-10.png", '',
+				"class='br-no'", _T("tw:retour_ligne_ignore")) : "");
+			$img_br_no = inserer_attribut($img_br_no, 'aria-label', _T("tw:retour_ligne_ignore"));
 		}
 		$t = str_replace(_AUTOBR, $img_br_no, $t);
 	}
 	if ($show_autobr and _AUTOBR) {
 		if (is_null($img_br_manuel)) {
-			$img_br_manuel = http_img_pack("br-manuel" . aide_lang_dir($spip_lang, $spip_lang_rtl) . "-10.png",
-				_T("tw:retour_ligne_manuel"), "class='br-manuel'", _T("tw:retour_ligne_manuel"));
+			$img_br_manuel = http_img_pack("br-manuel" . aide_lang_dir($spip_lang, $spip_lang_rtl) . "-10.png", '' ,
+				"class='br-manuel'", _T("tw:retour_ligne_manuel"));
+			$img_br_manuel = inserer_attribut($img_br_manuel, 'aria-label', _T("tw:retour_ligne_manuel"));
 		}
 		if (is_null($img_br_auto)) {
-			$img_br_auto = http_img_pack("br-auto" . aide_lang_dir($spip_lang, $spip_lang_rtl) . "-10.png",
-				_T("tw:retour_ligne_auto"), "class='br-auto'", _T("tw:retour_ligne_auto"));
+			$img_br_auto = http_img_pack("br-auto" . aide_lang_dir($spip_lang, $spip_lang_rtl) . "-10.png", '',
+				"class='br-auto'", _T("tw:retour_ligne_auto"));
+			$img_br_auto = inserer_attribut($img_br_auto, 'aria-label', _T("tw:retour_ligne_auto"));
 		}
 		if (false !== strpos(strtolower($t), '<br')) {
 			$t = preg_replace("/<br\b.*>/UiS", "$img_br_manuel\\0", $t);

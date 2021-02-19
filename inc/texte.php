@@ -393,10 +393,26 @@ function traiter_tableau($bloc) {
 			if (preg_match(',^\|\|([^|]*)(\|(.*))?$,sS', rtrim($ligne, '|'), $cap)) {
 				$cap = array_pad($cap, 4, null);
 				$l = 0;
+				$summary = '';
+				if ($describedby = trim($cap[3])) {
+					if (!html5_permis()) {
+						$summary = ' summary="' . entites_html(trim($cap[3])) . '"';
+						$describedby = '';
+					}
+					else {
+						$iddescribedby = 'dby'.$tabid;
+						$summary = ' aria-describedby="'.$iddescribedby.'"';
+					}
+				}
 				if ($caption = trim($cap[1])) {
+					if ($describedby) {
+						$caption .= '<br /> <small id="'.$iddescribedby.'" class="summary offscreen">' . $describedby . '</small>';
+					}
 					$debut_table .= "<caption>" . $caption . "</caption>\n";
 				}
-				$summary = ' summary="' . entites_html(trim($cap[3])) . '"';
+				elseif ($describedby) {
+					$debut_table .= '<caption id="'.$iddescribedby.'" class="summary offscreen"><small>' . $describedby . "</small></caption>\n";
+				}
 			}
 			// - <thead> sous la forme |{{titre}}|{{titre}}|
 			//   Attention thead oblige a avoir tbody

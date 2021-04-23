@@ -74,18 +74,30 @@ abstract class TextWheelDataSet {
 	 * @return array
 	 */
 	protected function loadFile(&$file, $default_path = '') {
-		if (!preg_match(',[.](yaml|json)$,i', $file)
-			// external rules
-			or !$file = $this->findFile($file, $default_path)
-		) {
-			return array();
+		// On détermine si le JSON ou le YAML est fourni pour la wheel sachant que le JSON est prioritaire
+		if (!preg_match(',[.](yaml|json)$,i', $file, $matches)) {
+			// Le fichier est fourni sans son extension, on essaie avec le json puis le yaml sinon.
+			$file = $file . '.json';
+			$format = 'json';
+			if (!$file = $this->findFile($file, $default_path)) {
+				$file = $file . '.yaml';
+				$format = 'yaml';
+				if (!$file = $this->findFile($file, $default_path)) {
+					return array();
+				}
+			}
+		} else {
+			$format = $matches[1];
+			if (!$file = $this->findFile($file, $default_path)) {
+				return array();
+			}
 		}
 
 		defined('_YAML_EVAL_PHP') || define('_YAML_EVAL_PHP', false);
-		if (_WHEELS_FORMAT == 'yaml') {
-			$dataset = yaml_decode(file_get_contents($file));
-		} else {
+		if ($format == 'json') {
 			$dataset = json_decode(file_get_contents($file), true);
+		} else {
+			$dataset = defined(_DIR_PLUGIN_YAML) ? yaml_decode(file_get_contents($file)) : array();
 		}
 
 		if (is_null($dataset)) {

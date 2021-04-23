@@ -37,37 +37,37 @@ if (!isset($GLOBALS['spip_wheels'])) {
 // Si le tableau des raccourcis existe déjà
 if (!isset($GLOBALS['spip_wheels']['raccourcis']) or !is_array($GLOBALS['spip_wheels']['raccourcis'])) {
 	$GLOBALS['spip_wheels']['raccourcis'] = array(
-		'spip/spip'  . _WHEELS_FILE_EXTENSION ,
-		'spip/spip-paragrapher'  . _WHEELS_FILE_EXTENSION
+		'spip/spip',
+		'spip/spip-paragrapher'
 	);
 } else {
 	$GLOBALS['spip_wheels']['raccourcis'] = array_merge(
 		array(
-			'spip/spip'  . _WHEELS_FILE_EXTENSION ,
-			'spip/spip-paragrapher'  . _WHEELS_FILE_EXTENSION
+			'spip/spip',
+			'spip/spip-paragrapher'
 		),
 		$GLOBALS['spip_wheels']['raccourcis']
 	);
 }
 
 if (test_espace_prive()) {
-	$GLOBALS['spip_wheels']['raccourcis'][] = 'spip/ecrire'  . _WHEELS_FILE_EXTENSION ;
+	$GLOBALS['spip_wheels']['raccourcis'][] = 'spip/ecrire';
 }
 
 $GLOBALS['spip_wheels']['interdire_scripts'] = array(
-	'spip/interdire-scripts'  . _WHEELS_FILE_EXTENSION
+	'spip/interdire-scripts'
 );
 
 $GLOBALS['spip_wheels']['echappe_js'] = array(
-	'spip/echappe-js'  . _WHEELS_FILE_EXTENSION
+	'spip/echappe-js'
 );
 
 $GLOBALS['spip_wheels']['paragrapher'] = array(
-	'spip/spip-paragrapher'  . _WHEELS_FILE_EXTENSION
+	'spip/spip-paragrapher'
 );
 
 $GLOBALS['spip_wheels']['listes'] = array(
-	'spip/spip-listes'  . _WHEELS_FILE_EXTENSION
+	'spip/spip-listes'
 );
 
 //

@@ -22,6 +22,11 @@ if (!defined('_WHEELS_VERSION')) {
 	define('_WHEELS_VERSION', 68672);
 }
 
+// Pour choisir le JSON ou le YAML
+if (!defined('_WHEELS_FILE_EXTENSION')) {
+	define('_WHEELS_FILE_EXTENSION', '.' . _WHEELS_FORMAT);
+}
+
 //
 // Definition des principales wheels de SPIP
 //
@@ -32,37 +37,37 @@ if (!isset($GLOBALS['spip_wheels'])) {
 // Si le tableau des raccourcis existe déjà
 if (!isset($GLOBALS['spip_wheels']['raccourcis']) or !is_array($GLOBALS['spip_wheels']['raccourcis'])) {
 	$GLOBALS['spip_wheels']['raccourcis'] = array(
-		'spip/spip.yaml',
-		'spip/spip-paragrapher.yaml'
+		'spip/spip'  . _WHEELS_FILE_EXTENSION ,
+		'spip/spip-paragrapher'  . _WHEELS_FILE_EXTENSION
 	);
 } else {
 	$GLOBALS['spip_wheels']['raccourcis'] = array_merge(
 		array(
-			'spip/spip.yaml',
-			'spip/spip-paragrapher.yaml'
+			'spip/spip'  . _WHEELS_FILE_EXTENSION ,
+			'spip/spip-paragrapher'  . _WHEELS_FILE_EXTENSION
 		),
 		$GLOBALS['spip_wheels']['raccourcis']
 	);
 }
 
 if (test_espace_prive()) {
-	$GLOBALS['spip_wheels']['raccourcis'][] = 'spip/ecrire.yaml';
+	$GLOBALS['spip_wheels']['raccourcis'][] = 'spip/ecrire'  . _WHEELS_FILE_EXTENSION ;
 }
 
 $GLOBALS['spip_wheels']['interdire_scripts'] = array(
-	'spip/interdire-scripts.yaml'
+	'spip/interdire-scripts'  . _WHEELS_FILE_EXTENSION
 );
 
 $GLOBALS['spip_wheels']['echappe_js'] = array(
-	'spip/echappe-js.yaml'
+	'spip/echappe-js'  . _WHEELS_FILE_EXTENSION
 );
 
 $GLOBALS['spip_wheels']['paragrapher'] = array(
-	'spip/spip-paragrapher.yaml'
+	'spip/spip-paragrapher'  . _WHEELS_FILE_EXTENSION
 );
 
 $GLOBALS['spip_wheels']['listes'] = array(
-	'spip/spip-listes.yaml'
+	'spip/spip-listes'  . _WHEELS_FILE_EXTENSION
 );
 
 //

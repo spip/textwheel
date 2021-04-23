@@ -22,6 +22,12 @@ if (!defined('_ECRIRE_INC_VERSION')) {
 	return;
 }
 
+
+// Pour choisir le JSON ou le YAML
+if (!defined('_WHEELS_FORMAT')) {
+	define('_WHEELS_FORMAT', 'json');
+}
+
 require_once dirname(__FILE__) . "/textwheelrule.php";
 
 abstract class TextWheelDataSet {
@@ -61,14 +67,14 @@ abstract class TextWheelDataSet {
 	}
 
 	/**
-	 * Load a yaml file describing data
+	 * Load a YAML/JSON file describing data
 	 *
 	 * @param string $file
 	 * @param string $default_path
 	 * @return array
 	 */
 	protected function loadFile(&$file, $default_path = '') {
-		if (!preg_match(',[.]yaml$,i', $file)
+		if (!preg_match(',[.](yaml|json)$,i', $file)
 			// external rules
 			or !$file = $this->findFile($file, $default_path)
 		) {
@@ -76,23 +82,20 @@ abstract class TextWheelDataSet {
 		}
 
 		defined('_YAML_EVAL_PHP') || define('_YAML_EVAL_PHP', false);
-		if (!function_exists('yaml_decode')) {
-			if (function_exists('include_spip')) {
-				include_spip('inc/yaml-mini');
-			} else {
-				require_once dirname(__FILE__) . '/../inc/yaml.php';
-			}
+		if (_WHEELS_FORMAT == 'yaml') {
+			$dataset = yaml_decode(file_get_contents($file));
+		} else {
+			$dataset = json_decode(file_get_contents($file), true);
 		}
-		$dataset = yaml_decode(file_get_contents($file));
 
 		if (is_null($dataset)) {
 			$dataset = array();
 		}
-#			throw new DomainException('yaml file is empty, unreadable or badly formed: '.$file.var_export($dataset,true));
+#			throw new DomainException('rule file is empty, unreadable or badly formed: '.$file.var_export($dataset,true));
 
 		// if a php file with same name exists
 		// include it as it contains callback functions
-		if ($f = preg_replace(',[.]yaml$,i', '.php', $file)
+		if ($f = preg_replace(',[.](yaml|json)$,i', '.php', $file)
 			and file_exists($f)
 		) {
 			$dataset[] = array('require' => $f, 'priority' => -1000);
@@ -198,7 +201,7 @@ class TextWheelRuleSet extends TextWheelDataSet {
 			return;
 		}
 
-		// rules can be a string : yaml filename
+		// rules can be a string : yaml or json filename
 		if (is_string($rules)) {
 			$file = $rules; // keep the real filename
 			$rules = $this->loadFile($file, $filepath);

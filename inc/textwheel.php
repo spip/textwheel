@@ -22,11 +22,6 @@ if (!defined('_WHEELS_VERSION')) {
 	define('_WHEELS_VERSION', 68672);
 }
 
-// Pour choisir le JSON ou le YAML
-if (!defined('_WHEELS_FILE_EXTENSION')) {
-	define('_WHEELS_FILE_EXTENSION', '.' . _WHEELS_FORMAT);
-}
-
 //
 // Definition des principales wheels de SPIP
 //

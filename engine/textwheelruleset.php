@@ -24,8 +24,8 @@ if (!defined('_ECRIRE_INC_VERSION')) {
 
 
 // Pour choisir le JSON ou le YAML
-if (!defined('_WHEELS_FORMAT')) {
-	define('_WHEELS_FORMAT', 'json');
+if (!defined('_WHEELS_FORMAT_DEFAUT')) {
+	define('_WHEELS_FORMAT_DEFAUT', 'json');
 }
 
 require_once dirname(__FILE__) . "/textwheelrule.php";
@@ -74,30 +74,35 @@ abstract class TextWheelDataSet {
 	 * @return array
 	 */
 	protected function loadFile(&$file, $default_path = '') {
-		// On détermine si le JSON ou le YAML est fourni pour la wheel sachant que le JSON est prioritaire
 		if (!preg_match(',[.](yaml|json)$,i', $file, $matches)) {
 			// Le fichier est fourni sans son extension, on essaie avec le json puis le yaml sinon.
-			$file = $file . '.json';
-			$format = 'json';
-			if (!$file = $this->findFile($file, $default_path)) {
-				$file = $file . '.yaml';
-				$format = 'yaml';
-				if (!$file = $this->findFile($file, $default_path)) {
-					return array();
+			$formats = (_WHEELS_FORMAT_DEFAUT === 'json') ? array('json', 'yaml') : array('yaml', 'json');
+			$name = $file;
+			foreach ($formats as $format) {
+				$file = $name . '.' . $format;
+				if ($file = $this->findFile($file, $default_path)) {
+					break;
 				}
 			}
 		} else {
 			$format = $matches[1];
-			if (!$file = $this->findFile($file, $default_path)) {
-				return array();
-			}
+		}
+
+		if (
+			!$file
+			or (!$file = $this->findFile($file, $default_path))
+		) {
+			return array();
 		}
 
 		defined('_YAML_EVAL_PHP') || define('_YAML_EVAL_PHP', false);
 		if ($format == 'json') {
 			$dataset = json_decode(file_get_contents($file), true);
+		} elseif (defined('_DIR_PLUGIN_YAML')) {
+			include_spip('inc/yaml');
+			$dataset =  yaml_decode(file_get_contents($file));
 		} else {
-			$dataset = defined(_DIR_PLUGIN_YAML) ? yaml_decode(file_get_contents($file)) : array();
+			$dataset = array();
 		}
 
 		if (is_null($dataset)) {

@@ -3,7 +3,7 @@
 	categorie="edition"
 	version="2.0.0"
 	etat="test"
-	compatibilite="[3.3.0-dev;3.3.*]"
+	compatibilite="[4.0.0-alpha;4.0.*]"
 	logo="textwheel-32.png"
 >
 

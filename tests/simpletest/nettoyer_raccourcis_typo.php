@@ -1,6 +1,6 @@
 <?php
 
-require_once('lanceur_spip.php');
+require_once(__DIR__ . '/lanceur_spip.php');
 
 class Test_nettoyer_raccourcis_typo extends SpipTest {
 

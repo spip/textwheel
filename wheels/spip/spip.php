@@ -36,10 +36,7 @@ function replace_math($t) {
  *     Code HTML d'une puce
  */
 function replace_puce() {
-	static $puce;
-	if (!isset($puce)) {
-		$puce = "\n<br />" . definir_puce() . "&nbsp;";
-	}
+	$puce = "\n<br />" . definir_puce() . "&nbsp;";
 
 	return $puce;
 }

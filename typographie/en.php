@@ -10,7 +10,7 @@
  *  Pour plus de détails voir le fichier COPYING.txt ou l'aide en ligne.   *
 \***************************************************************************/
 
-if (!defined("_ECRIRE_INC_VERSION")) {
+if (!defined('_ECRIRE_INC_VERSION')) {
 	return;
 }
 
@@ -20,10 +20,10 @@ function typographie_en($t) {
 	static $trans;
 
 	if (!isset($trans)) {
-		$trans = array(
-			"&nbsp;" => '~',
+		$trans = [
+			'&nbsp;' => '~',
 			"'" => '&#8217;'
-		);
+		];
 		$charset = isset($GLOBALS['meta']['charset']) ? $GLOBALS['meta']['charset'] : '';
 		switch ($charset) {
 			case 'utf-8':
@@ -52,12 +52,12 @@ function typographie_en($t) {
 	}
 
 	if (strpos($t, '~') !== false) {
-		$t = preg_replace("/ *~+ */S", "~", $t);
+		$t = preg_replace('/ *~+ */S', '~', $t);
 	}
 
-	$t = preg_replace("/--([^-]|$)/S", "$pro&mdash;$1", $t, -1, $c);
+	$t = preg_replace('/--([^-]|$)/S', "$pro&mdash;$1", $t, -1, $c);
 	if ($c) {
-		$t = preg_replace("/([-\n])$pro&mdash;/S", "$1--", $t);
+		$t = preg_replace("/([-\n])$pro&mdash;/S", '$1--', $t);
 		$t = str_replace($pro, '', $t);
 	}
 

@@ -29,10 +29,10 @@ include_spip('inc/textwheel');
 
 
 defined('_AUTOBR') || define('_AUTOBR', "<br class='autobr' />");
-define('_AUTOBR_IGNORER', _AUTOBR ? "<!-- ig br -->" : "");
+define('_AUTOBR_IGNORER', _AUTOBR ? '<!-- ig br -->' : '');
 
 // Avec cette surcharge, cette globale n'est plus définie, et du coup ça plante dans les plugins qui font un foreach dessus comme ZPIP
-$GLOBALS['spip_raccourcis_typo'] = array();
+$GLOBALS['spip_raccourcis_typo'] = [];
 if (!isset($GLOBALS['toujours_paragrapher'])) {
 	$GLOBALS['toujours_paragrapher'] = true;
 }
@@ -90,18 +90,19 @@ function echappe_js($t) {
  *     Texte paragraphé
  */
 function paragrapher($t, $toujours_paragrapher = null) {
-	static $wheel = array();
+	static $wheel = [];
 	if (is_null($toujours_paragrapher)) {
 		$toujours_paragrapher = $GLOBALS['toujours_paragrapher'];
 	}
 
 	if (!isset($wheel[$toujours_paragrapher])) {
 		$ruleset = SPIPTextWheelRuleset::loader($GLOBALS['spip_wheels']['paragrapher']);
-		if (!$toujours_paragrapher
+		if (
+			!$toujours_paragrapher
 			and $rule = $ruleset->getRule('toujours-paragrapher')
 		) {
 			$rule->disabled = true;
-			$ruleset->addRules(array('toujours-paragrapher' => $rule));
+			$ruleset->addRules(['toujours-paragrapher' => $rule]);
 		}
 		$wheel[$toujours_paragrapher] = new TextWheel($ruleset);
 	}
@@ -139,12 +140,12 @@ function paragrapher($t, $toujours_paragrapher = null) {
  * @return string
  *     Code protégé
  **/
-function interdire_scripts($arg, $mode_filtre=null) {
+function interdire_scripts($arg, $mode_filtre = null) {
 	// on memorise le resultat sur les arguments non triviaux
-	static $dejavu = array();
-	static $wheel = array();
+	static $dejavu = [];
+	static $wheel = [];
 
-	if (is_null($mode_filtre) or !in_array($mode_filtre, array(-1, 0, 1))) {
+	if (is_null($mode_filtre) or !in_array($mode_filtre, [-1, 0, 1])) {
 		$mode_filtre = $GLOBALS['filtrer_javascript'];
 	}
 
@@ -162,10 +163,11 @@ function interdire_scripts($arg, $mode_filtre=null) {
 		);
 		// Pour le js, trois modes : parano (-1), prive (0), ok (1)
 		// desactiver la regle echappe-js si besoin
-		if ($mode_filtre == 1
+		if (
+			$mode_filtre == 1
 			or ($mode_filtre == 0 and !test_espace_prive())
 		) {
-			$ruleset->addRules(array('securite-js' => array('disabled' => true)));
+			$ruleset->addRules(['securite-js' => ['disabled' => true]]);
 		}
 		$wheel[$mode_filtre] = new TextWheel($ruleset);
 	}
@@ -180,10 +182,10 @@ function interdire_scripts($arg, $mode_filtre=null) {
 
 	// Reinserer les echappements des modeles
 	if (defined('_PROTEGE_JS_MODELES')) {
-		$t = echappe_retour($t, "javascript" . _PROTEGE_JS_MODELES);
+		$t = echappe_retour($t, 'javascript' . _PROTEGE_JS_MODELES);
 	}
 	if (defined('_PROTEGE_PHP_MODELES')) {
-		$t = echappe_retour($t, "php" . _PROTEGE_PHP_MODELES);
+		$t = echappe_retour($t, 'php' . _PROTEGE_PHP_MODELES);
 	}
 
 	return $dejavu[$mode_filtre][$arg] = $t;
@@ -214,7 +216,7 @@ function interdire_scripts($arg, $mode_filtre=null) {
  * @return string $t
  *     Texte transformé
  **/
-function typo($letexte, $echapper = true, $connect = null, $env = array()) {
+function typo($letexte, $echapper = true, $connect = null, $env = []) {
 	// Plus vite !
 	if (!$letexte) {
 		return $letexte;
@@ -268,8 +270,10 @@ function typo($letexte, $echapper = true, $connect = null, $env = array()) {
 	// https://core.spip.net/issues/3371
 	// et aussi dans l'espace public si la globale filtrer_javascript = -1
 	// https://core.spip.net/issues/4166
-	if ($GLOBALS['filtrer_javascript'] == -1
-	  or (isset($env['espace_prive']) and $env['espace_prive'] and $GLOBALS['filtrer_javascript']<=0)) {
+	if (
+		$GLOBALS['filtrer_javascript'] == -1
+		or (isset($env['espace_prive']) and $env['espace_prive'] and $GLOBALS['filtrer_javascript'] <= 0)
+	) {
 		$letexte = echapper_html_suspect($letexte);
 	}
 
@@ -281,7 +285,7 @@ function typo($letexte, $echapper = true, $connect = null, $env = array()) {
 define('_TYPO_PROTEGER', "!':;?~%-");
 define('_TYPO_PROTECTEUR', "\x1\x2\x3\x4\x5\x6\x7\x8");
 
-define('_TYPO_BALISE', ",</?[a-z!][^<>]*[" . preg_quote(_TYPO_PROTEGER) . "][^<>]*>,imsS");
+define('_TYPO_BALISE', ',</?[a-z!][^<>]*[' . preg_quote(_TYPO_PROTEGER) . '][^<>]*>,imsS');
 
 /**
  * Corrige la typographie
@@ -298,7 +302,7 @@ define('_TYPO_BALISE', ",</?[a-z!][^<>]*[" . preg_quote(_TYPO_PROTEGER) . "][^<>
  * @return string Texte
  */
 function corriger_typo($t, $lang = '') {
-	static $typographie = array();
+	static $typographie = [];
 	// Plus vite !
 	if (!$t) {
 		return $t;
@@ -374,14 +378,14 @@ function traiter_tableau($bloc) {
 
 	// Decouper le tableau en lignes
 	preg_match_all(',([|].*)[|]\n,UmsS', $bloc, $regs, PREG_PATTERN_ORDER);
-	$lignes = array();
+	$lignes = [];
 	$debut_table = $summary = '';
 	$l = 0;
 
 	// Traiter chaque ligne
 	$reg_line1 = ',^(\|(' . _RACCOURCI_TH_SPAN . '))+$,sS';
 	$reg_line_all = ',^(' . _RACCOURCI_TH_SPAN . ')$,sS';
-	$hc = $hl = array();
+	$hc = $hl = [];
 	$thead_ok = false;
 	foreach ($regs[1] as $ligne) {
 		$l++;
@@ -400,18 +404,18 @@ function traiter_tableau($bloc) {
 						$describedby = '';
 					}
 					else {
-						$iddescribedby = 'dby'.$tabid;
-						$summary = ' aria-describedby="'.$iddescribedby.'"';
+						$iddescribedby = 'dby' . $tabid;
+						$summary = ' aria-describedby="' . $iddescribedby . '"';
 					}
 				}
 				if ($caption = trim($cap[1])) {
 					if ($describedby) {
-						$caption .= '<br /> <small id="'.$iddescribedby.'" class="summary offscreen">' . $describedby . '</small>';
+						$caption .= '<br /> <small id="' . $iddescribedby . '" class="summary offscreen">' . $describedby . '</small>';
 					}
-					$debut_table .= "<caption>" . $caption . "</caption>\n";
+					$debut_table .= '<caption>' . $caption . "</caption>\n";
 				}
 				elseif ($describedby) {
-					$debut_table .= '<caption id="'.$iddescribedby.'" class="summary offscreen"><small>' . $describedby . "</small></caption>\n";
+					$debut_table .= '<caption id="' . $iddescribedby . '" class="summary offscreen"><small>' . $describedby . "</small></caption>\n";
 				}
 			}
 			// - <thead> sous la forme |{{titre}}|{{titre}}|
@@ -432,7 +436,7 @@ function traiter_tableau($bloc) {
 								$colspan = 1;
 							}
 							// inutile de garder le strong qui n'a servi que de marqueur
-							$cols[$c] = str_replace(array('{', '}'), '', $cols[$c]);
+							$cols[$c] = str_replace(['{', '}'], '', $cols[$c]);
 							$ligne = "<th id='id{$tabid}_c$c'$attr>$cols[$c]</th>$ligne";
 							$hc[$c] = "id{$tabid}_c$c"; // pour mettre dans les headers des td
 						}
@@ -461,7 +465,7 @@ function traiter_tableau($bloc) {
 			// Pas de paragraphes dans les cellules
 			foreach ($cols[1] as &$col) {
 				if (strlen($col = trim($col))) {
-					$col = preg_replace("/\n{2,}/S", "<br /> <br />", $col);
+					$col = preg_replace("/\n{2,}/S", '<br /> <br />', $col);
 					if (_AUTOBR) {
 						$col = str_replace("\n", _AUTOBR . "\n", $col);
 					}
@@ -477,16 +481,16 @@ function traiter_tableau($bloc) {
 	// on prepare une liste de rowspan par defaut, a partir
 	// du nombre de colonnes dans la premiere ligne.
 	// Reperer egalement les colonnes numeriques pour les cadrer a droite
-	$rowspans = $numeric = array();
+	$rowspans = $numeric = [];
 	$n = $lignes ? count($lignes[0]) : 0;
 	$k = count($lignes);
 	// distinguer les colonnes numeriques a point ou a virgule,
 	// pour les alignements eventuels sur "," ou "."
-	$numeric_class = array(
+	$numeric_class = [
 		'.' => 'point',
 		',' => 'virgule',
 		true => ''
-	);
+	];
 	for ($i = 0; $i < $n; $i++) {
 		$align = true;
 		for ($j = 0; $j < $k; $j++) {
@@ -509,7 +513,7 @@ function traiter_tableau($bloc) {
 		}
 	}
 	if (!isset($hl[0])) {
-		$hl = array();
+		$hl = [];
 	} // toute la colonne ou rien
 
 	// et on parcourt le tableau a l'envers pour ramasser les
@@ -526,10 +530,8 @@ function traiter_tableau($bloc) {
 			$cell = trim($cols[$c]);
 			if ($cell == '<') {
 				$colspan++;
-
 			} elseif ($cell == '^') {
 				$rowspans[$l - 1][$c] += $rowspans[$l][$c];
-
 			} else {
 				if ($colspan > 1) {
 					$attr .= " colspan='$colspan'";
@@ -546,7 +548,7 @@ function traiter_tableau($bloc) {
 				// inutile de garder le strong qui n'a servi que de marqueur
 				if ($b == 'th') {
 					$attr .= " id='" . $hl[$l] . "'";
-					$cols[$c] = str_replace(array('{', '}'), '', $cols[$c]);
+					$cols[$c] = str_replace(['{', '}'], '', $cols[$c]);
 				}
 				$ligne = "\n<$b" . $attr . '>' . $cols[$c] . "</$b>" . $ligne;
 			}
@@ -558,12 +560,12 @@ function traiter_tableau($bloc) {
 	}
 
 	$class = $GLOBALS['class_spip_plus'];
-	if (!$class or strpos($GLOBALS['class_spip_plus'],'class=') === false) {
+	if (!$class or strpos($GLOBALS['class_spip_plus'], 'class=') === false) {
 		$class = ' ' . trim('class="table" ' . $class);
 	}
 	else {
-		$class = str_replace('class="','class="table ', $class);
-		$class = str_replace("class='","class='table ", $class);
+		$class = str_replace('class="', 'class="table ', $class);
+		$class = str_replace("class='", "class='table ", $class);
 	}
 	return "\n\n<table" . $class . $summary . ">\n"
 	. $debut_table
@@ -604,10 +606,10 @@ function traiter_listes($t) {
 // Ces deux constantes permettent de proteger certains caracteres
 // en les remplacanat par des caracteres "illegaux". (cf corriger_caracteres)
 
-define('_RACCOURCI_PROTEGER', "{}_-");
+define('_RACCOURCI_PROTEGER', '{}_-');
 define('_RACCOURCI_PROTECTEUR', "\x1\x2\x3\x4");
 
-define('_RACCOURCI_BALISE', ",</?[a-z!][^<>]*[" . preg_quote(_RACCOURCI_PROTEGER) . "][^<>]*>,imsS");
+define('_RACCOURCI_BALISE', ',</?[a-z!][^<>]*[' . preg_quote(_RACCOURCI_PROTEGER) . '][^<>]*>,imsS');
 
 /**
  * mais d'abord, une callback de reconfiguration des raccourcis
@@ -622,44 +624,46 @@ function personnaliser_raccourcis(&$ruleset) {
 		if (isset($GLOBALS['debut_intertitre']) and $rule = $ruleset->getRule('intertitres')) {
 			$rule->replace[0] = preg_replace(',<[^>]*>,Uims', $GLOBALS['debut_intertitre'], $rule->replace[0]);
 			$rule->replace[1] = preg_replace(',<[^>]*>,Uims', $GLOBALS['fin_intertitre'], $rule->replace[1]);
-			$ruleset->addRules(array('intertitres' => $rule));
+			$ruleset->addRules(['intertitres' => $rule]);
 			if ($rule = $ruleset->getRule('intertitres-compliques')) {
 				$rule->replace[0] = preg_replace(',<[^>]*>,Uims', $GLOBALS['debut_intertitre'], $rule->replace[0]);
 				$rule->replace[1] = preg_replace(',<[^>]*>,Uims', $GLOBALS['fin_intertitre'], $rule->replace[1]);
-				$ruleset->addRules(array('intertitres-compliques' => $rule));
+				$ruleset->addRules(['intertitres-compliques' => $rule]);
 			}
 		}
 		if (isset($GLOBALS['debut_gras']) and $rule = $ruleset->getRule('gras')) {
 			$rule->replace[0] = preg_replace(',<[^>]*>,Uims', $GLOBALS['debut_gras'], $rule->replace[0]);
 			$rule->replace[1] = preg_replace(',<[^>]*>,Uims', $GLOBALS['fin_gras'], $rule->replace[1]);
-			$ruleset->addRules(array('gras' => $rule));
+			$ruleset->addRules(['gras' => $rule]);
 		}
 		if (isset($GLOBALS['debut_italique']) and $rule = $ruleset->getRule('italiques')) {
 			$rule->replace[0] = preg_replace(',<[^>]*>,Uims', $GLOBALS['debut_italique'], $rule->replace[0]);
 			$rule->replace[1] = preg_replace(',<[^>]*>,Uims', $GLOBALS['fin_italique'], $rule->replace[1]);
-			$ruleset->addRules(array('italiques' => $rule));
+			$ruleset->addRules(['italiques' => $rule]);
 		}
 		if (isset($GLOBALS['ligne_horizontale']) and $rule = $ruleset->getRule('ligne-horizontale')) {
 			$rule->replace = preg_replace(',<[^>]*>,Uims', $GLOBALS['ligne_horizontale'], $rule->replace);
-			$ruleset->addRules(array('ligne-horizontale' => $rule));
+			$ruleset->addRules(['ligne-horizontale' => $rule]);
 		}
-		if (isset($GLOBALS['toujours_paragrapher']) and !$GLOBALS['toujours_paragrapher']
+		if (
+			isset($GLOBALS['toujours_paragrapher']) and !$GLOBALS['toujours_paragrapher']
 			and $rule = $ruleset->getRule('toujours-paragrapher')
 		) {
 			$rule->disabled = true;
-			$ruleset->addRules(array('toujours-paragrapher' => $rule));
+			$ruleset->addRules(['toujours-paragrapher' => $rule]);
 		}
 	}
 
 	// retourner une signature de l'etat de la fonction, pour la mise en cache
-	return implode("/",
-		array(
-			isset($GLOBALS['debut_intertitre']) ? $GLOBALS['debut_intertitre'] : "",
-			isset($GLOBALS['debut_gras']) ? $GLOBALS['debut_gras'] : "",
-			isset($GLOBALS['debut_italique']) ? $GLOBALS['debut_italique'] : "",
-			isset($GLOBALS['ligne_horizontale']) ? $GLOBALS['ligne_horizontale'] : "",
+	return implode(
+		'/',
+		[
+			isset($GLOBALS['debut_intertitre']) ? $GLOBALS['debut_intertitre'] : '',
+			isset($GLOBALS['debut_gras']) ? $GLOBALS['debut_gras'] : '',
+			isset($GLOBALS['debut_italique']) ? $GLOBALS['debut_italique'] : '',
+			isset($GLOBALS['ligne_horizontale']) ? $GLOBALS['ligne_horizontale'] : '',
 			isset($GLOBALS['toujours_paragrapher']) ? $GLOBALS['toujours_paragrapher'] : 1,
-		)
+		]
 	);
 }
 
@@ -674,12 +678,13 @@ function personnaliser_raccourcis(&$ruleset) {
  * @return string
  */
 function traiter_raccourcis($t, $show_autobr = false) {
-	static $wheel = array(), $notes;
+	static $wheel = [], $notes;
 	static $img_br_auto, $img_br_manuel, $img_br_no;
 	global $spip_lang, $spip_lang_rtl;
 
 	// hack1: respecter le tag ignore br
-	if (_AUTOBR_IGNORER
+	if (
+		_AUTOBR_IGNORER
 		and strncmp($t, _AUTOBR_IGNORER, strlen(_AUTOBR_IGNORER)) == 0
 	) {
 		$ignorer_autobr = true;
@@ -691,15 +696,17 @@ function traiter_raccourcis($t, $show_autobr = false) {
 	// Appeler les fonctions de pre_traitement
 	$t = pipeline('pre_propre', $t);
 
-	$key = "";
+	$key = '';
 	$key = personnaliser_raccourcis($key);
 	if (!isset($wheel[$key])) {
 		$ruleset = SPIPTextWheelRuleset::loader(
-			$GLOBALS['spip_wheels']['raccourcis'], 'personnaliser_raccourcis'
+			$GLOBALS['spip_wheels']['raccourcis'],
+			'personnaliser_raccourcis'
 		);
 		$wheel[$key] = new TextWheel($ruleset);
 
-		if (_request('var_mode') == 'wheel'
+		if (
+			_request('var_mode') == 'wheel'
 			and autoriser('debug')
 		) {
 			$f = $wheel->compile();
@@ -733,22 +740,34 @@ function traiter_raccourcis($t, $show_autobr = false) {
 	// car en css on ne sait pas styler l'element BR
 	if ($ignorer_autobr and _AUTOBR) {
 		if (is_null($img_br_no)) {
-			$img_br_no = ($show_autobr ? http_img_pack("br-no" . aide_lang_dir($spip_lang, $spip_lang_rtl) . "-10.png", '',
-				"class='br-no'", _T("tw:retour_ligne_ignore")) : "");
-			$img_br_no = inserer_attribut($img_br_no, 'aria-label', _T("tw:retour_ligne_ignore"));
+			$img_br_no = ($show_autobr ? http_img_pack(
+				'br-no' . aide_lang_dir($spip_lang, $spip_lang_rtl) . '-10.png',
+				'',
+				"class='br-no'",
+				_T('tw:retour_ligne_ignore')
+			) : '');
+			$img_br_no = inserer_attribut($img_br_no, 'aria-label', _T('tw:retour_ligne_ignore'));
 		}
 		$t = str_replace(_AUTOBR, $img_br_no, $t);
 	}
 	if ($show_autobr and _AUTOBR) {
 		if (is_null($img_br_manuel)) {
-			$img_br_manuel = http_img_pack("br-manuel" . aide_lang_dir($spip_lang, $spip_lang_rtl) . "-10.png", '' ,
-				"class='br-manuel'", _T("tw:retour_ligne_manuel"));
-			$img_br_manuel = inserer_attribut($img_br_manuel, 'aria-label', _T("tw:retour_ligne_manuel"));
+			$img_br_manuel = http_img_pack(
+				'br-manuel' . aide_lang_dir($spip_lang, $spip_lang_rtl) . '-10.png',
+				'',
+				"class='br-manuel'",
+				_T('tw:retour_ligne_manuel')
+			);
+			$img_br_manuel = inserer_attribut($img_br_manuel, 'aria-label', _T('tw:retour_ligne_manuel'));
 		}
 		if (is_null($img_br_auto)) {
-			$img_br_auto = http_img_pack("br-auto" . aide_lang_dir($spip_lang, $spip_lang_rtl) . "-10.png", '',
-				"class='br-auto'", _T("tw:retour_ligne_auto"));
-			$img_br_auto = inserer_attribut($img_br_auto, 'aria-label', _T("tw:retour_ligne_auto"));
+			$img_br_auto = http_img_pack(
+				'br-auto' . aide_lang_dir($spip_lang, $spip_lang_rtl) . '-10.png',
+				'',
+				"class='br-auto'",
+				_T('tw:retour_ligne_auto')
+			);
+			$img_br_auto = inserer_attribut($img_br_auto, 'aria-label', _T('tw:retour_ligne_auto'));
 		}
 		if (false !== strpos(strtolower($t), '<br')) {
 			$t = preg_replace("/<br\b.*>/UiS", "$img_br_manuel\\0", $t);
@@ -781,7 +800,7 @@ function traiter_raccourcis($t, $show_autobr = false) {
  * @return string $t
  *     Texte transformé
  **/
-function propre($t, $connect = null, $env = array()) {
+function propre($t, $connect = null, $env = []) {
 	// les appels directs a cette fonction depuis le php de l'espace
 	// prive etant historiquement ecrits sans argment $connect
 	// on utilise la presence de celui-ci pour distinguer les cas
@@ -805,10 +824,12 @@ function propre($t, $connect = null, $env = array()) {
 	// https://core.spip.net/issues/3371
 	// et aussi dans l'espace public si la globale filtrer_javascript = -1
 	// https://core.spip.net/issues/4166
-	if ($interdire_script
+	if (
+		$interdire_script
 		or $GLOBALS['filtrer_javascript'] == -1
-		or (isset($env['espace_prive']) and $env['espace_prive'] and $GLOBALS['filtrer_javascript']<=0)
-		or (isset($env['wysiwyg']) and $env['wysiwyg'] and $GLOBALS['filtrer_javascript']<=0)) {
+		or (isset($env['espace_prive']) and $env['espace_prive'] and $GLOBALS['filtrer_javascript'] <= 0)
+		or (isset($env['wysiwyg']) and $env['wysiwyg'] and $GLOBALS['filtrer_javascript'] <= 0)
+	) {
 		$t = echapper_html_suspect($t, false);
 	}
 	$t = echappe_html($t);

@@ -28,11 +28,11 @@ if (!defined('_WHEELS_FORMAT_DEFAUT')) {
 	define('_WHEELS_FORMAT_DEFAUT', 'json');
 }
 
-require_once dirname(__FILE__) . "/textwheelrule.php";
+require_once dirname(__FILE__) . '/textwheelrule.php';
 
 abstract class TextWheelDataSet {
 	# list of data
-	protected $data = array();
+	protected $data = [];
 
 	/**
 	 * file finder : can be overloaded in order to use application dependant
@@ -76,7 +76,7 @@ abstract class TextWheelDataSet {
 	protected function loadFile(&$file, $default_path = '') {
 		if (!preg_match(',[.](yaml|json)$,i', $file, $matches)) {
 			// Le fichier est fourni sans son extension, on essaie avec le json puis le yaml sinon.
-			$formats = (_WHEELS_FORMAT_DEFAUT === 'json') ? array('json', 'yaml') : array('yaml', 'json');
+			$formats = (_WHEELS_FORMAT_DEFAUT === 'json') ? ['json', 'yaml'] : ['yaml', 'json'];
 			$name = $file;
 			foreach ($formats as $format) {
 				$file = $name . '.' . $format;
@@ -92,7 +92,7 @@ abstract class TextWheelDataSet {
 			!$file
 			or (!$file = $this->findFile($file, $default_path))
 		) {
-			return array();
+			return [];
 		}
 
 		defined('_YAML_EVAL_PHP') || define('_YAML_EVAL_PHP', false);
@@ -102,25 +102,25 @@ abstract class TextWheelDataSet {
 			include_spip('inc/yaml');
 			$dataset =  yaml_decode(file_get_contents($file));
 		} else {
-			$dataset = array();
+			$dataset = [];
 		}
 
 		if (is_null($dataset)) {
-			$dataset = array();
+			$dataset = [];
 		}
 #			throw new DomainException('rule file is empty, unreadable or badly formed: '.$file.var_export($dataset,true));
 
 		// if a php file with same name exists
 		// include it as it contains callback functions
-		if ($f = preg_replace(',[.](yaml|json)$,i', '.php', $file)
+		if (
+			$f = preg_replace(',[.](yaml|json)$,i', '.php', $file)
 			and file_exists($f)
 		) {
-			$dataset[] = array('require' => $f, 'priority' => -1000);
+			$dataset[] = ['require' => $f, 'priority' => -1000];
 		}
 
 		return $dataset;
 	}
-
 }
 
 class TextWheelRuleSet extends TextWheelDataSet {
@@ -133,7 +133,7 @@ class TextWheelRuleSet extends TextWheelDataSet {
 	 * @param array|string $ruleset
 	 * @param string $filepath
 	 */
-	public function __construct($ruleset = array(), $filepath = '') {
+	public function __construct($ruleset = [], $filepath = '') {
 		if ($ruleset) {
 			$this->addRules($ruleset, $filepath);
 		}
@@ -251,14 +251,14 @@ class TextWheelRuleSet extends TextWheelDataSet {
 	 */
 	protected function sort() {
 		if (!$this->sorted) {
-			$rulz = array();
+			$rulz = [];
 			foreach ($this->data as $index => $rule) {
 				if (!$rule->disabled) {
 					$rulz[intval($rule->priority)][$index] = $rule;
 				}
 			}
 			ksort($rulz);
-			$this->data = array();
+			$this->data = [];
 			foreach ($rulz as $rules) {
 				$this->data += $rules;
 			}

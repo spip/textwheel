@@ -10,7 +10,7 @@
  *  Pour plus de détails voir le fichier COPYING.txt ou l'aide en ligne.   *
 \***************************************************************************/
 
-if (!defined("_ECRIRE_INC_VERSION")) {
+if (!defined('_ECRIRE_INC_VERSION')) {
 	return;
 }
 
@@ -26,21 +26,21 @@ if (!defined('_WHEELS_VERSION')) {
 // Definition des principales wheels de SPIP
 //
 if (!isset($GLOBALS['spip_wheels'])) {
-	$GLOBALS['spip_wheels'] = array();
+	$GLOBALS['spip_wheels'] = [];
 }
 
 // Si le tableau des raccourcis existe déjà
 if (!isset($GLOBALS['spip_wheels']['raccourcis']) or !is_array($GLOBALS['spip_wheels']['raccourcis'])) {
-	$GLOBALS['spip_wheels']['raccourcis'] = array(
+	$GLOBALS['spip_wheels']['raccourcis'] = [
 		'spip/spip',
 		'spip/spip-paragrapher'
-	);
+	];
 } else {
 	$GLOBALS['spip_wheels']['raccourcis'] = array_merge(
-		array(
+		[
 			'spip/spip',
 			'spip/spip-paragrapher'
-		),
+		],
 		$GLOBALS['spip_wheels']['raccourcis']
 	);
 }
@@ -49,21 +49,21 @@ if (test_espace_prive()) {
 	$GLOBALS['spip_wheels']['raccourcis'][] = 'spip/ecrire';
 }
 
-$GLOBALS['spip_wheels']['interdire_scripts'] = array(
+$GLOBALS['spip_wheels']['interdire_scripts'] = [
 	'spip/interdire-scripts'
-);
+];
 
-$GLOBALS['spip_wheels']['echappe_js'] = array(
+$GLOBALS['spip_wheels']['echappe_js'] = [
 	'spip/echappe-js'
-);
+];
 
-$GLOBALS['spip_wheels']['paragrapher'] = array(
+$GLOBALS['spip_wheels']['paragrapher'] = [
 	'spip/spip-paragrapher'
-);
+];
 
-$GLOBALS['spip_wheels']['listes'] = array(
+$GLOBALS['spip_wheels']['listes'] = [
 	'spip/spip-listes'
-);
+];
 
 //
 // Methode de chargement d'une wheel SPIP
@@ -91,14 +91,15 @@ class SPIPTextWheelRuleset extends TextWheelRuleSet {
 		# memoization
 		# attention : le ruleset peut contenir apres loading des chemins relatifs
 		# il faut donc que le cache depende du chemin courant vers la racine de SPIP
-		$key = "";
+		$key = '';
 		if ($callback) {
 			$key = $callback($key);
 		}
-		$key = 'tw-' . md5(_WHEELS_VERSION . "-" . serialize($ruleset) . $key . $class . _DIR_RACINE);
+		$key = 'tw-' . md5(_WHEELS_VERSION . '-' . serialize($ruleset) . $key . $class . _DIR_RACINE);
 
 		# lecture du cache
-		if ((!defined('_VAR_MODE') or _VAR_MODE != 'recalcul')
+		if (
+			(!defined('_VAR_MODE') or _VAR_MODE != 'recalcul')
 			and $cacheruleset = tw_cache_get($key)
 		) {
 			return $cacheruleset;
@@ -117,7 +118,7 @@ class SPIPTextWheelRuleset extends TextWheelRuleSet {
 
 function tw_trig_purger($quoi) {
 	if ($quoi == 'cache') {
-		purger_repertoire(_DIR_CACHE . "wheels");
+		purger_repertoire(_DIR_CACHE . 'wheels');
 	}
 
 	return $quoi;
@@ -137,7 +138,7 @@ function tw_cache_get($key) {
 		return cache_get($key);
 	}
 
-	return @unserialize(file_get_contents(_DIR_CACHE . "wheels/" . $key . ".txt"));
+	return @unserialize(file_get_contents(_DIR_CACHE . 'wheels/' . $key . '.txt'));
 }
 
 /**
@@ -154,7 +155,7 @@ function tw_cache_set($key, $value, $ttl = null) {
 	if (function_exists('cache_set')) {
 		return cache_set($key, $value, $ttl);
 	}
-	$dir = sous_repertoire(_DIR_CACHE, "wheels/");
+	$dir = sous_repertoire(_DIR_CACHE, 'wheels/');
 
-	return ecrire_fichier($dir . $key . ".txt", serialize($value));
+	return ecrire_fichier($dir . $key . '.txt', serialize($value));
 }

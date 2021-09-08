@@ -36,7 +36,7 @@ function replace_math($t) {
  *     Code HTML d'une puce
  */
 function replace_puce() {
-	$puce = "\n<br />" . definir_puce() . "&nbsp;";
+	$puce = "\n<br />" . definir_puce() . '&nbsp;';
 
 	return $puce;
 }
@@ -55,7 +55,7 @@ function replace_puce() {
  */
 function inserer_abbr($m) {
 	$title = attribut_html($m[2]);
-	$lang = (isset($m[3]) ? " lang=\"" . $m[3] . "\"" : "");
+	$lang = (isset($m[3]) ? ' lang="' . $m[3] . '"' : '');
 
-	return "<abbr title=\"$title\"$lang>" . $m[1] . "</abbr>";
+	return "<abbr title=\"$title\"$lang>" . $m[1] . '</abbr>';
 }

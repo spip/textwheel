@@ -2,7 +2,7 @@
 
 /*
  * transforme un raccourci de ressource en un lien minimaliste
- * 
+ *
  *
  */
 
@@ -24,7 +24,7 @@ function tw_pre_liens($t) {
 		$t = preg_replace_callback(_EXTRAIRE_RESSOURCES, 'tw_traiter_ressources', $t);
 
 		// echapper les autoliens eventuellement inseres (en une seule fois)
-		if (strpos($t, "<html>") !== false) {
+		if (strpos($t, '<html>') !== false) {
 			$t = echappe_html($t);
 		}
 	}
@@ -40,21 +40,20 @@ function tw_traiter_ressources($r) {
 	$url = $url[0];
 	# <http://url/absolue>
 	if (preg_match(',^https?://,i', $url)) {
-		$html = PtoBR(propre("<span class='ressource spip_out'>&lt;[->" . $url . "]&gt;</span>"));
+		$html = PtoBR(propre("<span class='ressource spip_out'>&lt;[->" . $url . ']&gt;</span>'));
 	} # <url/relative>
 	else {
 		if (false !== strpos($url, '/')) {
-			$html = PtoBR(propre("<span class='ressource spip_in'>&lt;[->" . $url . "]&gt;</span>"));
+			$html = PtoBR(propre("<span class='ressource spip_in'>&lt;[->" . $url . ']&gt;</span>'));
 		} # <fichier.rtf>
 		else {
-
 			if (
 				preg_match(',\.([^.]+)$,', $url, $regs)
 				and file_exists($f = _DIR_IMG . $regs[1] . '/' . $url)
 			) {
-				$html = PtoBR(propre("<span class='ressource spip_in'>&lt;[" . $url . "->" . $f . "]&gt;</span>"));
+				$html = PtoBR(propre("<span class='ressource spip_in'>&lt;[" . $url . '->' . $f . ']&gt;</span>'));
 			} else {
-				$html = PtoBR(propre("<span class='ressource'>&lt;" . $url . "&gt;</span>"));
+				$html = PtoBR(propre("<span class='ressource'>&lt;" . $url . '&gt;</span>'));
 			}
 		}
 	}

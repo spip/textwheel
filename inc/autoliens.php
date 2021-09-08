@@ -1,6 +1,5 @@
 <?php
 
-
 // Les URLs brutes sont converties en <a href='url'>url</a>
 // https://code.spip.net/@traiter_raccourci_liens
 function tw_autoliens($t) {
@@ -10,7 +9,7 @@ function tw_autoliens($t) {
 	$t = preg_replace_callback(_EXTRAIRE_LIENS, 'tw_traiter_autoliens', $t);
 
 	// echapper les autoliens eventuellement inseres (en une seule fois)
-	if (strpos($t, "<html>") !== false) {
+	if (strpos($t, '<html>') !== false) {
 		$t = echappe_html($t);
 	}
 

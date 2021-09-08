@@ -22,15 +22,15 @@ if (!defined('_ECRIRE_INC_VERSION')) {
 	return;
 }
 
-require_once dirname(__FILE__) . "/textwheelruleset.php";
+require_once dirname(__FILE__) . '/textwheelruleset.php';
 
 class TextWheel {
 	protected $ruleset;
-	protected static $subwheel = array();
+	protected static $subwheel = [];
 
 	// Experimental : projet de compilation PHP d'une wheel
 	// pour generation d'un fichier php execute a la place de ->text()
-	protected $compiled = array();
+	protected $compiled = [];
 
 	/**
 	 * Constructor
@@ -62,9 +62,8 @@ class TextWheel {
 	public function text($t) {
 		$rules = &$this->ruleset->getRules();
 		## apply each in order
-		foreach ($rules as $name => $rule) #php4+php5
-		{
-			$this->apply($rules[$name], $t);
+		foreach ($rules as $name => $rule) { #php4+php5
+		$this->apply($rules[$name], $t);
 		}
 		#foreach ($this->rules as &$rule) #smarter &reference, but php5 only
 		#	$this->apply($rule, $t);
@@ -79,20 +78,21 @@ class TextWheel {
 		$rules = &$this->ruleset->getRules();
 
 		## apply each in order
-		$pre = array();
-		$comp = array();
+		$pre = [];
+		$comp = [];
 
 		foreach ($rules as $name => $rule) {
 			$rule->name = $name;
 			$this->initRule($rule);
-			if ($rule->replace
+			if (
+				$rule->replace
 				and $compiledEntry = $this->ruleCompiledEntryName($rule->replace)
 				and isset($this->compiled[$compiledEntry])
 				and $fun = $this->compiled[$compiledEntry]
 			) {
 				$pre[] = "\n###\n## $name\n###\n" . $fun;
 				preg_match(',function (\w+), ', $fun, $r);
-				$rule->compilereplace = "'".$r[1]."'"; # ne pas modifier ->replace sinon on casse l'execution...
+				$rule->compilereplace = "'" . $r[1] . "'"; # ne pas modifier ->replace sinon on casse l'execution...
 			}
 
 			$r = "\t/* $name */\n";
@@ -226,7 +226,7 @@ class TextWheel {
 		elseif ($rule->is_wheel) {
 			$rule_number = count(TextWheel::$subwheel);
 			TextWheel::$subwheel[] = $this->createSubWheel($rule->replace);
-			$cname = 'compiled_' . str_replace('-', '_', $rule->name) . '_' . substr(md5(spl_object_hash($rule)),0,7);
+			$cname = 'compiled_' . str_replace('-', '_', $rule->name) . '_' . substr(md5(spl_object_hash($rule)), 0, 7);
 			if ($rule->type == 'all' or $rule->type == 'str' or $rule->type == 'split' or !isset($rule->match)) {
 				$rule->replace = function ($m) use ($rule_number) {
 					return TextWheel::getSubWheel($rule_number)->text($m);
@@ -238,7 +238,7 @@ class TextWheel {
 				$rule->replace = function ($m) use ($rule_number, $pick_match) {
 					return TextWheel::getSubWheel($rule_number)->text($m[$pick_match]);
 				};
-				$rule->compilereplace = 'function ($m) { return '.$cname.'($m['.$pick_match.']) }';
+				$rule->compilereplace = 'function ($m) { return ' . $cname . '($m[' . $pick_match . ']) }';
 			}
 			$rule->is_wheel = false;
 			$rule->is_callback = true;
@@ -256,7 +256,8 @@ class TextWheel {
 				case 'str':
 					$rule->func_replace = 'replace_str';
 					// test if quicker strtr usable
-					if (!$rule->is_callback
+					if (
+						!$rule->is_callback
 						and is_array($rule->match) and is_array($rule->replace)
 						and $c = array_map('strlen', $rule->match)
 						and $c = array_unique($c)
@@ -274,7 +275,7 @@ class TextWheel {
 					break;
 				case 'split':
 					$rule->func_replace = 'replace_split';
-					$rule->match = array($rule->match, is_null($rule->glue) ? $rule->match : $rule->glue);
+					$rule->match = [$rule->match, is_null($rule->glue) ? $rule->match : $rule->glue];
 					break;
 				case 'preg':
 				default:
@@ -285,7 +286,7 @@ class TextWheel {
 				$rule->func_replace .= '_cb';
 			}
 		}
-		if (!method_exists("TextWheel", $rule->func_replace)) {
+		if (!method_exists('TextWheel', $rule->func_replace)) {
 			$rule->disabled = true;
 			$rule->func_replace = 'replace_identity';
 		}
@@ -512,11 +513,11 @@ class TextWheelDebug extends TextWheel {
 			if ($p < 1000) {
 				$s = '';
 			} else {
-				$s = sprintf("%d ", $x = floor($p / 1000));
+				$s = sprintf('%d ', $x = floor($p / 1000));
 				$p -= ($x * 1000);
 			}
 
-			return $s . sprintf("%.3f ms", $p);
+			return $s . sprintf('%.3f ms', $p);
 		}
 	}
 
@@ -529,11 +530,10 @@ class TextWheelDebug extends TextWheel {
 	public function text($t) {
 		$rules = &$this->ruleset->getRules();
 		## apply each in order
-		foreach ($rules as $name => $rule) #php4+php5
-		{
-			if (is_int($name)) {
+		foreach ($rules as $name => $rule) { #php4+php5
+		if (is_int($name)) {
 				$name .= ' ' . $rule->match;
-			}
+		}
 			$this->timer($name);
 			$b = $t;
 			$this->apply($rule, $t);
@@ -546,7 +546,6 @@ class TextWheelDebug extends TextWheel {
 			} else {
 				TextWheelDebug::$tnu[$name] += $v;
 			}
-
 		}
 		#foreach ($this->rules as &$rule) #smarter &reference, but php5 only
 		#	$this->apply($rule, $t);
@@ -582,15 +581,19 @@ class TextWheelDebug extends TextWheel {
 				$total += $t;
 				if (intval($t * 10)) {
 					echo "<tr>
-					<td class='number strong'>" . number_format(round($t * 10) / 10, 1) . "</td><td> " . spip_htmlspecialchars($r) . "</td>
-					<td"
-						. (!$applications ? " class='zero'" : "")
-						. ">" . $applications . "/" . intval(TextWheelDebug::$w[$r]) . "</td>
-					<td class='number'>" . ($applications ? number_format(round(TextWheelDebug::$tu[$r] / $applications * 100) / 100,
-							2) : "") . "</td>
-					<td class='number'>" . (($nu = intval(TextWheelDebug::$w[$r]) - $applications) ? number_format(round(TextWheelDebug::$tnu[$r] / $nu * 100) / 100,
-							2) : "") . "</td>
-					</tr>";
+					<td class='number strong'>" . number_format(round($t * 10) / 10, 1) . '</td><td> ' . spip_htmlspecialchars($r) . '</td>
+					<td'
+						. (!$applications ? " class='zero'" : '')
+						. '>' . $applications . '/' . intval(TextWheelDebug::$w[$r]) . "</td>
+					<td class='number'>" . ($applications ? number_format(
+							round(TextWheelDebug::$tu[$r] / $applications * 100) / 100,
+							2
+						) : '') . "</td>
+					<td class='number'>" . (($nu = intval(TextWheelDebug::$w[$r]) - $applications) ? number_format(
+							round(TextWheelDebug::$tnu[$r] / $nu * 100) / 100,
+							2
+						) : '') . '</td>
+					</tr>';
 				}
 			}
 			echo "</table>\n";
@@ -601,9 +604,9 @@ class TextWheelDebug extends TextWheel {
 			<thead><tr><th>temps</th><th>rule</th></tr></thead>\n";
 			ksort($GLOBALS['totaux']);
 			TextWheelDebug::outputTotal($GLOBALS['totaux']);
-			echo "</table>";
+			echo '</table>';
 			# somme des temps des rules, ne tient pas compte des subwheels
-			echo "<p>temps total rules: " . round($total) . "&nbsp;ms</p>\n";
+			echo '<p>temps total rules: ' . round($total) . "&nbsp;ms</p>\n";
 			echo "</div>\n";
 		}
 	}
@@ -631,7 +634,6 @@ class TextWheelDebug extends TextWheel {
 	protected function &createSubWheel(&$rules) {
 		return new TextWheelDebug($rules);
 	}
-
 }
 
 

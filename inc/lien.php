@@ -108,19 +108,13 @@ function inc_lien_dist(
 	} elseif (strncmp($texte, '<html>', 6) == 0) { # cf traiter_lien_explicite
 		$class = 'spip_url';
 		# spip_out sur les URLs externes
-		if (
-			preg_match(',^\w+://,iS', $lien)
-			and strncasecmp($lien, url_de_base(), strlen(url_de_base()))
-		) {
+		if (lien_is_url_externe($lien)) {
 			$class .= ' spip_out';
 		}
 	} elseif (!$class) {
 		# spip_out sur les URLs externes
-		if (
-			preg_match(',^\w+://,iS', $lien)
-			and strncasecmp($lien, url_de_base(), strlen(url_de_base()))
-		) {
-			$class = 'spip_out'; # si pas spip_in|spip_glossaire
+		if (lien_is_url_externe($lien)) {
+			$class = 'spip_out';
 		}
 	}
 	if ($class) {
@@ -199,6 +193,22 @@ function inc_lien_dist(
 	}
 
 	return $res;
+}
+
+/**
+ * Detecter qu'une URL est externe pour poser une class en fonction
+ * @param string $url_lien
+ * @return bool
+ */
+function lien_is_url_externe($url_lien) {
+	if (
+		preg_match(',^\w+://,iS', $url_lien)
+		and strncasecmp($url_lien, url_de_base(), strlen(url_de_base()))
+	) {
+		return true;
+	}
+
+	return false;
 }
 
 /**

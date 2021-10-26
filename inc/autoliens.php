@@ -8,11 +8,6 @@ function tw_autoliens($t) {
 
 	$t = preg_replace_callback(_EXTRAIRE_LIENS, 'tw_traiter_autoliens', $t);
 
-	// echapper les autoliens eventuellement inseres (en une seule fois)
-	if (strpos($t, '<html>') !== false) {
-		$t = echappe_html($t);
-	}
-
 	return $t;
 }
 
@@ -42,14 +37,18 @@ function tw_traiter_autoliens($r) {
 	// en particulier le "|" quand elles sont dans un tableau a la SPIP
 	preg_match('/^(.*?)([,.;?|]?)$/', $l, $k);
 	$url = $protocol . '://' . $k[1];
-	$lien = charger_fonction('lien', 'inc');
-	// deux fois <html> car inc_lien echappe un coup et restaure ensuite
-	// => un perd 1 <html>
-	$r = $lien($url, "<html><html>$url</html></html>", '', '', '', 'nofollow') . $k[2];
-
-	// ajouter la class auto
-	$r = inserer_attribut($r, 'class', trim(extraire_attribut($r, 'class') . ' auto'));
-
 	// si l'original ne contenait pas le 'http:' on le supprime du clic
-	return ($m ? $r : str_replace('>http://', '>', $r));
+	$url_echap = echappe_html("<html>". ($m ? $url : substr($url, strlen('http://'))) ."</html>");
+
+
+	$class = 'spip_url';
+	if (lien_is_url_externe($url)) {
+		$class .= ' spip_out';
+	}
+	$class .= ' auto';
+
+	$lien = charger_fonction('lien', 'inc');
+	$r = $lien($url, $url_echap, $class, '', '', 'nofollow') . $k[2];
+
+	return $r;
 }

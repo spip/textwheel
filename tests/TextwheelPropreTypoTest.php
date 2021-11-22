@@ -15,8 +15,8 @@ namespace Spip\Core\Tests;
 use PHPUnit\Framework\TestCase;
 
 
-class TextwheelPropreTest extends TestCase {
-	protected static $lang = 'en';
+class TextwheelPropreTypoTest extends TestCase {
+	protected static $lang = 'fr';
 	protected static $filtrer_javascript;
 	protected static $class_spip_plus;
 	protected static $class_spip;
@@ -76,55 +76,20 @@ class TextwheelPropreTest extends TestCase {
 	}
 
 
-
 	/**
-	 * Provider pour propre() sur du texte
+	 * Provider pour propre() sur du texte avec de la typo
 	 * @return array
 	 */
-	public function providerPropre() {
-		return static::providerData('base');
+	public function providerTypo() {
+		return static::providerData('typo');
 	}
 
 	/**
-	 * @dataProvider providerPropre
+	 * @dataProvider providerTypo
 	 */
-	public function testPropre($source, $expected) {
+	public function testTypo($source, $expected) {
 		$this->assertEquals($expected, static::propreNotes($source));
 	}
-
-
-	/**
-	 * Provider pour propre() sur du modeles de type block
-	 * @return array
-	 */
-	public function providerModelesBlock() {
-		return static::providerData('modeles_block');
-	}
-
-	/**
-	 * @dataProvider providerModelesBlock
-	 */
-	public function testModelesBlock($source, $expected) {
-		$this->assertEquals($expected, static::propreNotes($source));
-	}
-
-
-	/**
-	 * Provider pour propre() sur du modeles de type inline
-	 * @return array
-	 */
-	public function providerModelesInline() {
-		return static::providerData('modeles_inline');
-	}
-
-	/**
-	 * @dataProvider providerModelesInline
-	 */
-	public function testModelesInline($source, $expected) {
-		$this->assertEquals($expected, static::propreNotes($source));
-	}
-
-
 
 
 	public static function tearDownAfterClass(): void{

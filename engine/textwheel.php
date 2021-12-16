@@ -226,7 +226,7 @@ class TextWheel {
 		elseif ($rule->is_wheel) {
 			$rule_number = count(TextWheel::$subwheel);
 			TextWheel::$subwheel[] = $this->createSubWheel($rule->replace);
-			$cname = 'compiled_' . str_replace('-', '_', $rule->name) . '_' . substr(md5(spl_object_hash($rule)), 0, 7);
+			$cname = 'compiled_' . str_replace('-', '_', $rule->name ?? '') . '_' . substr(md5(spl_object_hash($rule)), 0, 7);
 			if ($rule->type == 'all' or $rule->type == 'str' or $rule->type == 'split' or !isset($rule->match)) {
 				$rule->replace = function ($m) use ($rule_number) {
 					return TextWheel::getSubWheel($rule_number)->text($m);

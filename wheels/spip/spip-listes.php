@@ -16,6 +16,7 @@ function tw_liste_close($t) {
 }
 
 function tw_liste_item($t, $quoi = 'item') {
+	$nouv_type = null;
 	global $class_spip, $class_spip_plus;
 	static $niveau;
 	static $pile_li;

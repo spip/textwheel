@@ -28,7 +28,7 @@ if (!defined('_WHEELS_FORMAT_DEFAUT')) {
 	define('_WHEELS_FORMAT_DEFAUT', 'json');
 }
 
-require_once dirname(__FILE__) . '/textwheelrule.php';
+require_once __DIR__ . '/textwheelrule.php';
 
 abstract class TextWheelDataSet {
 	# list of data
@@ -57,7 +57,7 @@ abstract class TextWheelDataSet {
 
 		// textwheel default path ?
 		if (!$default_path) {
-			$default_path = dirname(__FILE__) . '/../wheels/';
+			$default_path = __DIR__ . '/../wheels/';
 		}
 		if (file_exists($f = $default_path . $file)) {
 			return $f;
@@ -97,7 +97,7 @@ abstract class TextWheelDataSet {
 
 		defined('_YAML_EVAL_PHP') || define('_YAML_EVAL_PHP', false);
 		if ($format == 'json') {
-			$dataset = json_decode(file_get_contents($file), true);
+			$dataset = json_decode(file_get_contents($file), true, 512, JSON_THROW_ON_ERROR);
 		} elseif (defined('_DIR_PLUGIN_YAML')) {
 			include_spip('inc/yaml');
 			$dataset =  yaml_decode(file_get_contents($file));

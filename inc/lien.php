@@ -44,6 +44,7 @@ function inc_lien_dist(
 	$connect = '',
 	$env = []
 ) {
+	$mime = null;
 	static $u = null;
 	if (!$u) {
 		$u = url_de_base();
@@ -59,7 +60,7 @@ function inc_lien_dist(
 		$hlang
 		and $match = typer_raccourci($lien)
 	) {
-		@list($type, , $id, , $args, , $ancre) = $match;
+		@[$type, , $id, , $args, , $ancre] = $match;
 		$trouver_table = charger_fonction('trouver_table', 'base');
 		$desc = $trouver_table(table_objet($type, $connect), $connect);
 		if (
@@ -95,7 +96,7 @@ function inc_lien_dist(
 		if (!$class and isset($lien['class'])) {
 			$class = $lien['class'];
 		}
-		$lang = isset($lien['lang']) ? $lien['lang'] : '';
+		$lang = $lien['lang'] ?? '';
 		$mime = isset($lien['mime']) ? " type='" . $lien['mime'] . "'" : '';
 		$lien = $lien['url'];
 	}
@@ -147,7 +148,7 @@ function inc_lien_dist(
 
 	$lang_objet_prev = '';
 	if ($hlang and $hlang !== $GLOBALS['spip_lang']) {
-		$lang_objet_prev = isset($GLOBALS['lang_objet']) ? $GLOBALS['lang_objet'] : null;
+		$lang_objet_prev = $GLOBALS['lang_objet'] ?? null;
 		$GLOBALS['lang_objet'] = $hlang;
 	}
 
@@ -159,7 +160,7 @@ function inc_lien_dist(
 			'"',
 			'&quot;',
 			$lien
-		) . "\"$class$lang$title$rel" . (isset($mime) ? $mime : '') . ">$texte</a>";
+		) . "\"$class$lang$title$rel" . ($mime ?? '') . ">$texte</a>";
 		if ($lang_objet_prev !== '') {
 			if ($lang_objet_prev) {
 				$GLOBALS['lang_objet'] = $lang_objet_prev;
@@ -326,7 +327,7 @@ function expanser_un_lien($reg, $quoi = 'echappe', $env = null) {
 			$sources[$k] = $reg[0];
 
 			#$titre=$reg[1];
-			list($titre, $bulle, $hlang) = traiter_raccourci_lien_atts($reg[1]);
+			[$titre, $bulle, $hlang] = traiter_raccourci_lien_atts($reg[1]);
 			$r = end($reg);
 			// la mise en lien automatique est passee par la a tort !
 			// corrigeons pour eviter d'avoir un <a...> dans un href...
@@ -343,10 +344,10 @@ function expanser_un_lien($reg, $quoi = 'echappe', $env = null) {
 			return $inserts[$k++];
 			break;
 		case 'reinsert':
-			if (count($inserts)) {
+			if (is_countable($inserts) ? count($inserts) : 0) {
 				$reg = str_replace($inserts, $regs, $reg);
 			}
-			list($inserts, $sources, $regs, $connect, $k) = array_pop($pile);
+			[$inserts, $sources, $regs, $connect, $k] = array_pop($pile);
 
 			return $reg;
 			break;
@@ -384,18 +385,18 @@ function nettoyer_raccourcis_typo($texte, $connect = '') {
 	if (preg_match_all(_RACCOURCI_LIEN, $texte, $regs, PREG_SET_ORDER)) {
 		include_spip('inc/texte');
 		foreach ($regs as $reg) {
-			list($titre, , ) = traiter_raccourci_lien_atts($reg[1]);
+			[$titre, , ] = traiter_raccourci_lien_atts($reg[1]);
 			if (!$titre) {
-				$match = typer_raccourci($reg[count($reg) - 1]);
+				$match = typer_raccourci($reg[(is_countable($reg) ? count($reg) : 0) - 1]);
 				if (!isset($match[0])) {
 					$match[0] = '';
 				}
-				@list($type, , $id, , , , ) = $match;
+				@[$type, , $id, , , , ] = $match;
 
 				if ($type) {
 					$url = generer_url_entite($id, $type, '', '', true);
 					if (is_array($url)) {
-						list($type, $id) = $url;
+						[$type, $id] = $url;
 					}
 					$titre = traiter_raccourci_titre($id, $type, $connect);
 				}
@@ -541,8 +542,8 @@ function virtuel_redirige($virtuel, $url = false) {
 
 // https://code.spip.net/@calculer_url
 function calculer_url($ref, $texte = '', $pour = 'url', $connect = '', $echappe_typo = true) {
-	$r = traiter_lien_implicite($ref, $texte, $pour, $connect, $echappe_typo);
-	$r = ($r ? $r : traiter_lien_explicite($ref, $texte, $pour, $connect, $echappe_typo));
+	$r = traiter_lien_implicite($ref, $texte, $pour, $connect);
+	$r = ($r ?: traiter_lien_explicite($ref, $texte, $pour, $connect, $echappe_typo));
 
 	return $r;
 }
@@ -625,12 +626,12 @@ function liens_implicite_glose_dist($texte, $id, $type, $args, $ancre, $connect 
  * @return array|bool|string
  */
 function traiter_lien_implicite($ref, $texte = '', $pour = 'url', $connect = '') {
-	$cible = ($connect ? $connect : (isset($GLOBALS['lien_implicite_cible_public']) ? $GLOBALS['lien_implicite_cible_public'] : null));
+	$cible = ($connect ?: $GLOBALS['lien_implicite_cible_public'] ?? null);
 	if (!($match = typer_raccourci($ref))) {
 		return false;
 	}
 
-	@list($type, , $id, , $args, , $ancre) = $match;
+	@[$type, , $id, , $args, , $ancre] = $match;
 
 	# attention dans le cas des sites le lien doit pointer non pas sur
 	# la page locale du site, mais directement sur le site lui-meme
@@ -648,7 +649,7 @@ function traiter_lien_implicite($ref, $texte = '', $pour = 'url', $connect = '')
 	}
 
 	if (is_array($url)) {
-		@list($type, $id) = $url;
+		@[$type, $id] = $url;
 		$url = generer_url_entite($id, $type, $args, $ancre, $cible);
 	}
 
@@ -819,7 +820,7 @@ function traiter_modeles($texte, $doublons = false, $echap = '', $connect = '', 
 
 		// Recuperer l'appel complet (y compris un eventuel lien)
 		foreach ($matches as $match) {
-			$a = strpos($texte, $match[0]);
+			$a = strpos($texte, (string) $match[0]);
 			preg_match(_RACCOURCI_MODELE_DEBUT, substr($texte, $a), $regs);
 
 			// s'assurer qu'il y a toujours un 5e arg, eventuellement vide
@@ -827,7 +828,7 @@ function traiter_modeles($texte, $doublons = false, $echap = '', $connect = '', 
 				$regs[] = '';
 			}
 
-			list(, $mod, $type, $id, $params, $fin) = $regs;
+			[, $mod, $type, $id, $params, $fin] = $regs;
 
 			if (
 				$fin
@@ -900,7 +901,7 @@ function traiter_modeles($texte, $doublons = false, $echap = '', $connect = '', 
 
 			// hack pour tout l'espace prive
 			if (((!_DIR_RESTREINT) or ($doublons)) and ($id)) {
-				foreach ($doublons ? $doublons : ['documents' => ['doc', 'emb', 'img']] as $quoi => $modeles) {
+				foreach ($doublons ?: ['documents' => ['doc', 'emb', 'img']] as $quoi => $modeles) {
 					if (in_array(strtolower($type), $modeles)) {
 						$GLOBALS["doublons_{$quoi}_inclus"][] = $id;
 					}
@@ -960,7 +961,7 @@ function traiter_raccourci_glossaire($texte) {
 			$_n = intval($m[2]);
 			$gloss = $m[1] ? ('#' . $m[1]) : '';
 			$t = $r[1] . $r[2] . $r[5];
-			list($t, $bulle, $hlang) = traiter_raccourci_lien_atts($t);
+			[$t, $bulle, $hlang] = traiter_raccourci_lien_atts($t);
 
 			if ($bulle === false) {
 				$bulle = $m[1];
@@ -981,7 +982,7 @@ function glossaire_std($terme) {
 	static $pcre = null;
 
 	if ($pcre === null) {
-		$pcre = isset($GLOBALS['meta']['pcre_u']) ? $GLOBALS['meta']['pcre_u'] : '';
+		$pcre = $GLOBALS['meta']['pcre_u'] ?? '';
 
 		if (strpos($url_glossaire_externe, '%s') === false) {
 			$url_glossaire_externe .= '%s';

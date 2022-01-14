@@ -60,7 +60,7 @@ function fermer_para_mano($t) {
 							$r
 						)
 					) {
-						$pos = strpos($pi, $r[0]);
+						$pos = strpos($pi, (string) $r[0]);
 						$t .= $cut . str_replace(
 							"\n",
 							_AUTOBR . "\n",

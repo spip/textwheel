@@ -15,10 +15,10 @@ function tw_autoliens($t) {
 // callback pour la fonction autoliens()
 // https://code.spip.net/@autoliens_callback
 function tw_traiter_autoliens($r) {
-	if (count($r) < 2) {
+	if ((is_countable($r) ? count($r) : 0) < 2) {
 		return reset($r);
 	}
-	list($tout, $l) = $r;
+	[$tout, $l] = $r;
 	if (!$l) {
 		return $tout;
 	}

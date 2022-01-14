@@ -23,7 +23,7 @@ class Test_nettoyer_raccourcis_typo extends SpipTest {
 
 
 	protected function _printTest(array $data, $nettoyer, $couper) {
-		$titre = isset($data['titre']) ? $data['titre'] : '';
+		$titre = $data['titre'] ?? '';
 		if (!$this->assertEqual($nettoyer, $data['nettoyer'])) {
 			$this->reporter->paintFormattedMessage("Nettoyer_raccourcis_typo | $titre. Texte -> Attendu -> Reçu");
 			$this->reporter->paintFormattedMessage($data['texte']);

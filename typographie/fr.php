@@ -30,7 +30,7 @@ function typographie_fr($t) {
 			'&deg;' => '&#176;',
 			"'" => '&#8217;'
 		];
-		$charset = isset($GLOBALS['meta']['charset']) ? $GLOBALS['meta']['charset'] : '';
+		$charset = $GLOBALS['meta']['charset'] ?? '';
 		switch ($charset) {
 			case 'utf-8':
 				$trans["\xc2\xa0"] = '~';

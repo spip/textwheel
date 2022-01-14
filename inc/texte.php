@@ -247,7 +247,7 @@ function typo($letexte, $echapper = true, $connect = null, $env = []) {
 	// NOTE : propre() ne passe pas par ici mais directement par corriger_typo
 	// cf. inc/lien
 
-	$letexte = traiter_modeles($mem = $letexte, false, $echapper ? $echapper : '', $connect, null, $env);
+	$letexte = traiter_modeles($mem = $letexte, false, $echapper ?: '', $connect, null, $env);
 	if (!$echapper and $letexte != $mem) {
 		$echapper = '';
 	}
@@ -333,7 +333,7 @@ function corriger_typo($t, $lang = '') {
 	$em = ($em !== $t);
 
 	// Charger & appliquer les fonctions de typographie
-	$idxl = "$lang:" . (isset($GLOBALS['lang_objet']) ? $GLOBALS['lang_objet'] : $GLOBALS['spip_lang']);
+	$idxl = "$lang:" . ($GLOBALS['lang_objet'] ?? $GLOBALS['spip_lang']);
 	if (!isset($typographie[$idxl])) {
 		$typographie[$idxl] = charger_fonction(lang_typo($lang), 'typographie');
 	}
@@ -541,7 +541,7 @@ function traiter_tableau($bloc) {
 					$attr .= " rowspan='$x'";
 				}
 				$b = ($c == 0 and isset($hl[$l])) ? 'th' : 'td';
-				$h = (isset($hc[$c]) ? $hc[$c] : '') . ' ' . (($b == 'td' and isset($hl[$l])) ? $hl[$l] : '');
+				$h = ($hc[$c] ?? '') . ' ' . (($b == 'td' and isset($hl[$l])) ? $hl[$l] : '');
 				if ($h = trim($h)) {
 					$attr .= " headers='$h'";
 				}
@@ -658,11 +658,11 @@ function personnaliser_raccourcis(&$ruleset) {
 	return implode(
 		'/',
 		[
-			isset($GLOBALS['debut_intertitre']) ? $GLOBALS['debut_intertitre'] : '',
-			isset($GLOBALS['debut_gras']) ? $GLOBALS['debut_gras'] : '',
-			isset($GLOBALS['debut_italique']) ? $GLOBALS['debut_italique'] : '',
-			isset($GLOBALS['ligne_horizontale']) ? $GLOBALS['ligne_horizontale'] : '',
-			isset($GLOBALS['toujours_paragrapher']) ? $GLOBALS['toujours_paragrapher'] : 1,
+			$GLOBALS['debut_intertitre'] ?? '',
+			$GLOBALS['debut_gras'] ?? '',
+			$GLOBALS['debut_italique'] ?? '',
+			$GLOBALS['ligne_horizontale'] ?? '',
+			$GLOBALS['toujours_paragrapher'] ?? 1,
 		]
 	);
 }
@@ -717,7 +717,7 @@ function traiter_raccourcis($t, $show_autobr = false) {
 	}
 
 	// Gerer les notes (ne passe pas dans le pipeline)
-	list($t, $mes_notes) = $notes($t);
+	[$t, $mes_notes] = $notes($t);
 
 	try {
 		$t = $wheel[$key]->text($t);

@@ -22,7 +22,7 @@ if (!defined('_ECRIRE_INC_VERSION')) {
 	return;
 }
 
-require_once dirname(__FILE__) . '/textwheelruleset.php';
+require_once __DIR__ . '/textwheelruleset.php';
 
 class TextWheel {
 	protected $ruleset;
@@ -70,7 +70,7 @@ class TextWheel {
 		return $t;
 	}
 
-	private function export($x) {
+	private static function export($x) {
 		return addcslashes(var_export($x, true), "\n\r\t");
 	}
 
@@ -218,7 +218,9 @@ class TextWheel {
 			// DEPRECATED : rule->create_replace, on ne peut rien faire de mieux ici
 			// mais c'est voue a disparaitre
 			$compile = $rule->replace . '($t)';
-			$rule->replace = create_function('$m', $rule->replace);
+			$rule->replace = function ($m) use ($rule) {
+				eval($rule->replace);
+			};
 			$this->compiled[$this->ruleCompiledEntryName($rule->replace)] = $compile;
 			$rule->create_replace = false;
 			$rule->is_callback = true;
@@ -228,16 +230,12 @@ class TextWheel {
 			TextWheel::$subwheel[] = $this->createSubWheel($rule->replace);
 			$cname = 'compiled_' . str_replace('-', '_', $rule->name ?? '') . '_' . substr(md5(spl_object_hash($rule)), 0, 7);
 			if ($rule->type == 'all' or $rule->type == 'str' or $rule->type == 'split' or !isset($rule->match)) {
-				$rule->replace = function ($m) use ($rule_number) {
-					return TextWheel::getSubWheel($rule_number)->text($m);
-				};
+				$rule->replace = fn($m) => TextWheel::getSubWheel($rule_number)->text($m);
 				$rule->compilereplace = "'$cname'";
 			}
 			else {
 				$pick_match = intval($rule->pick_match);
-				$rule->replace = function ($m) use ($rule_number, $pick_match) {
-					return TextWheel::getSubWheel($rule_number)->text($m[$pick_match]);
-				};
+				$rule->replace = fn($m) => TextWheel::getSubWheel($rule_number)->text($m[$pick_match]);
 				$rule->compilereplace = 'function ($m) { return ' . $cname . '($m[' . $pick_match . ']) }';
 			}
 			$rule->is_wheel = false;
@@ -319,11 +317,11 @@ class TextWheel {
 			$this->initRule($rule);
 		}
 
-		if (isset($rule->if_str) and strpos($t, $rule->if_str) === false) {
+		if (isset($rule->if_str) and strpos($t, (string) $rule->if_str) === false) {
 			return;
 		}
 
-		if (isset($rule->if_stri) and stripos($t, $rule->if_stri) === false) {
+		if (isset($rule->if_stri) and stripos($t, (string) $rule->if_stri) === false) {
 			return;
 		}
 
@@ -410,7 +408,7 @@ class TextWheel {
 	 * @param int $count
 	 */
 	protected static function replace_str_cb(&$match, &$replace, &$t, &$count) {
-		if (strpos($t, $match) !== false) {
+		if (strpos($t, (string) $match) !== false) {
 			if (count($b = explode($match, $t)) > 1) {
 				$t = join($replace($match), $b);
 			}
@@ -642,7 +640,7 @@ class TextWheelDebug extends TextWheel {
  */
 if (!function_exists('stripos')) {
 	function stripos($haystack, $needle) {
-		return strpos($haystack, stristr($haystack, $needle));
+		return strpos($haystack, (string) stristr($haystack, (string) $needle));
 	}
 }
 

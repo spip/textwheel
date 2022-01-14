@@ -101,7 +101,7 @@ function inc_notes_dist($arg, $operation = 'traiter', $ignorer_autobr = false) {
 				$next_marqueur--;
 			}
 			// on redepile tout suite a une fin d'inclusion ou d'un affichage des notes
-			list($les_notes, $compt_note, $notes_vues, $marqueur) = array_pop($pile);
+			[$les_notes, $compt_note, $notes_vues, $marqueur] = array_pop($pile);
 			#$les_notes .= $prev_notes;
 			// si pas de marqueur attribue, on le fait
 			if (!$marqueur) {
@@ -118,7 +118,7 @@ function inc_notes_dist($arg, $operation = 'traiter', $ignorer_autobr = false) {
 			break;
 		case 'restaurer_etat':
 			if ($arg and is_array($arg)) { // si qqchose a restaurer
-			list($les_notes, $compt_note, $notes_vues, $marqueur, $next_marqueur) = $arg;
+			[$les_notes, $compt_note, $notes_vues, $marqueur, $next_marqueur] = $arg;
 			}
 			break;
 		case 'contexter_cache':
@@ -157,7 +157,7 @@ function traiter_raccourci_notes($letexte, $marqueur_notes) {
 	$mn = !$marqueur_notes ? '' : ($marqueur_notes . '-');
 	$mes_notes = [];
 	foreach ($m as $r) {
-		list($note_source, $note_all, $ref, $nom, $note_texte) = $r;
+		[$note_source, $note_all, $ref, $nom, $note_texte] = $r;
 
 		// reperer une note nommee, i.e. entre chevrons
 		// On leve la Confusion avec une balise en regardant
@@ -198,7 +198,7 @@ function traiter_raccourci_notes($letexte, $marqueur_notes) {
 			$nom = _NOTES_OUVRE_REF . "<a href='#nb$ancre' class='spip_note' rel='appendix'$title$att>$nom</a>" . _NOTES_FERME_REF;
 		}
 
-		$pos = strpos($letexte, $note_source);
+		$pos = strpos($letexte, (string) $note_source);
 		$letexte = rtrim(substr($letexte, 0, $pos), ' ')
 			. code_echappement($nom)
 			. substr($letexte, $pos + strlen($note_source));
@@ -214,7 +214,7 @@ function traiter_les_notes($notes, $ignorer_autobr) {
 	if ($notes) {
 		$title = _T('info_notes');
 		foreach ($notes as $r) {
-			list($ancre, $nom, $texte) = $r;
+			[$ancre, $nom, $texte] = $r;
 			$atts = " href='#nh$ancre' class='spip_note' title='$title $ancre' rev='appendix'";
 			$mes_notes .= "\n\n"
 				. "<div id='nb$ancre'><p" . ($GLOBALS['class_spip'] ? " class='spip_note'" : '') . '>'

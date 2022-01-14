@@ -60,7 +60,7 @@ function inc_lien_dist(
 		$hlang
 		and $match = typer_raccourci($lien)
 	) {
-		@[$type, , $id, , $args, , $ancre] = $match;
+		[$type, , $id, , $args, , $ancre] = array_pad($match, 7, null);
 		$trouver_table = charger_fonction('trouver_table', 'base');
 		$desc = $trouver_table(table_objet($type, $connect), $connect);
 		if (
@@ -391,7 +391,7 @@ function nettoyer_raccourcis_typo($texte, $connect = '') {
 				if (!isset($match[0])) {
 					$match[0] = '';
 				}
-				@[$type, , $id, , , , ] = $match;
+				[$type, , $id, , , , ] = array_pad($match, 7, null);
 
 				if ($type) {
 					$url = generer_url_entite($id, $type, '', '', true);
@@ -631,7 +631,7 @@ function traiter_lien_implicite($ref, $texte = '', $pour = 'url', $connect = '')
 		return false;
 	}
 
-	@[$type, , $id, , $args, , $ancre] = $match;
+	[$type, , $id, , $args, , $ancre] = array_pad($match, 7, null);
 
 	# attention dans le cas des sites le lien doit pointer non pas sur
 	# la page locale du site, mais directement sur le site lui-meme
@@ -649,7 +649,7 @@ function traiter_lien_implicite($ref, $texte = '', $pour = 'url', $connect = '')
 	}
 
 	if (is_array($url)) {
-		@[$type, $id] = $url;
+		[$type, $id] = array_pad($url, 2, null);
 		$url = generer_url_entite($id, $type, $args, $ancre, $cible);
 	}
 

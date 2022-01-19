@@ -38,7 +38,7 @@ function tw_traiter_autoliens($r) {
 	preg_match('/^(.*?)([,.;?|]?)$/', $l, $k);
 	$url = $protocol . '://' . $k[1];
 	// si l'original ne contenait pas le 'http:' on le supprime du clic
-	$url_echap = echappe_html("<html>". ($m ? $url : substr($url, strlen('http://'))) ."</html>");
+	$url_echap = echappe_html('<html>' . ($m ? $url : substr($url, strlen('http://'))) . '</html>');
 
 
 	$class = 'spip_url';

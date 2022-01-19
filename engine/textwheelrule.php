@@ -23,7 +23,6 @@ if (!defined('_ECRIRE_INC_VERSION')) {
 }
 
 class TextWheelRule {
-
 	## rule description
 	# optional
 	public $priority = 0; # rule priority (rules are applied in ascending order)

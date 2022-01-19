@@ -267,7 +267,6 @@ function balise_a($args = []) {
 // sinon les crochets ne peuvent plus servir qu'a ce type de raccourci
 define('_RACCOURCI_LIEN', '/\[([^][]*?([[][^]>-]*[]][^][]*)*)->(>?)([^]]*)\]/msS');
 
-// https://code.spip.net/@expanser_liens
 function expanser_liens($t, $connect = '', $env = []) {
 	$t = pipeline('pre_liens', $t);
 
@@ -438,7 +437,6 @@ function nettoyer_raccourcis_typo($texte, $connect = '') {
 // pour ne pas confondre avec un autre raccourci
 define('_RACCOURCI_ATTRIBUTS', '/^((?:[^[]*?(?:\[[^]]*\])?)*?)([|]([^<>]*?))?([{]([a-z_]*)[}])?$/');
 
-// https://code.spip.net/@traiter_raccourci_lien_atts
 function traiter_raccourci_lien_atts($texte) {
 	$bulle = $hlang = false;
 
@@ -540,7 +538,6 @@ function virtuel_redirige($virtuel, $url = false) {
 // 'titre': seulement T ci-dessus (i.e. le TITRE ci-dessus ou dans table SQL)
 // 'url':   seulement U  (i.e. generer_url_RACCOURCI)
 
-// https://code.spip.net/@calculer_url
 function calculer_url($ref, $texte = '', $pour = 'url', $connect = '', $echappe_typo = true) {
 	$r = traiter_lien_implicite($ref, $texte, $pour, $connect);
 	$r = ($r ?: traiter_lien_explicite($ref, $texte, $pour, $connect, $echappe_typo));
@@ -550,7 +547,6 @@ function calculer_url($ref, $texte = '', $pour = 'url', $connect = '', $echappe_
 
 define('_EXTRAIRE_LIEN', ',^\s*(http:?/?/?|mailto:?)\s*$,iS');
 
-// https://code.spip.net/@traiter_lien_explicite
 function traiter_lien_explicite($ref, $texte = '', $pour = 'url', $connect = '', $echappe_typo = true) {
 	if (preg_match(_EXTRAIRE_LIEN, $ref)) {
 		return ($pour != 'tout') ? '' : ['', '', '', ''];
@@ -616,8 +612,6 @@ function liens_implicite_glose_dist($texte, $id, $type, $args, $ancre, $connect 
  *  => tous les liens raccourcis pointent vers le prive
  * unset($GLOBALS['lien_implicite_cible_public']);
  *  => retablit le comportement automatique
- *
- * https://code.spip.net/@traiter_lien_implicite
  *
  * @param string $ref
  * @param string $texte
@@ -700,7 +694,6 @@ function traiter_lien_implicite($ref, $texte = '', $pour = 'url', $connect = '')
 
 define('_RACCOURCI_URL', '/^\s*(\w*?)\s*(\d+)(\?(.*?))?(#([^\s]*))?\s*$/S');
 
-// https://code.spip.net/@typer_raccourci
 function typer_raccourci($lien) {
 	if (!preg_match(_RACCOURCI_URL, $lien, $match)) {
 		return [];
@@ -786,7 +779,6 @@ function traiter_raccourci_titre($id, $type, $connect = null) {
 // Le nom du modele doit faire au moins trois caracteres (evite <h2>)
 // Si $doublons==true, on repere les documents sans calculer les modeles
 // mais on renvoie les params (pour l'indexation par le moteur de recherche)
-// https://code.spip.net/@traiter_modeles
 define(
 	'_PREG_MODELE',
 	'(<([a-z_-]{3,})' # <modele
@@ -803,7 +795,6 @@ define(
 
 define('_RACCOURCI_MODELE_DEBUT', '@^' . _RACCOURCI_MODELE . '@isS');
 
-// https://code.spip.net/@traiter_modeles
 function traiter_modeles($texte, $doublons = false, $echap = '', $connect = '', $liens = null, $env = []) {
 	// preserver la compatibilite : true = recherche des documents
 	if ($doublons === true) {
@@ -919,7 +910,6 @@ function traiter_modeles($texte, $doublons = false, $echap = '', $connect = '', 
 
 define('_RACCOURCI_ANCRE', '/\[#?([^][]*)<-\]/S');
 
-// https://code.spip.net/@traiter_raccourci_ancre
 function traiter_raccourci_ancre($letexte) {
 	if (preg_match_all(_RACCOURCI_ANCRE, $letexte, $m, PREG_SET_ORDER)) {
 		foreach ($m as $regs) {
@@ -942,7 +932,6 @@ function traiter_raccourci_ancre($letexte) {
 define('_RACCOURCI_GLOSSAIRE', '/\[\?+\s*([^][<>]+)\]/S');
 define('_RACCOURCI_GLOSES', '/^([^|#{]*\w[^|#{]*)([^#]*)(#([^|{}]*))?(.*)$/S');
 
-// https://code.spip.net/@traiter_raccourci_glossaire
 function traiter_raccourci_glossaire($texte) {
 	if (!preg_match_all(_RACCOURCI_GLOSSAIRE, $texte, $matches, PREG_SET_ORDER)) {
 		return $texte;
@@ -976,7 +965,6 @@ function traiter_raccourci_glossaire($texte) {
 	return $texte;
 }
 
-// https://code.spip.net/@glossaire_std
 function glossaire_std($terme) {
 	global $url_glossaire_externe;
 	static $pcre = null;

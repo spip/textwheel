@@ -208,7 +208,6 @@ function traiter_raccourci_notes($letexte, $marqueur_notes) {
 }
 
 
-// https://code.spip.net/@traiter_les_notes
 function traiter_les_notes($notes, $ignorer_autobr) {
 	$mes_notes = '';
 	if ($notes) {

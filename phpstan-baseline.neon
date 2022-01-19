@@ -31,16 +31,6 @@ parameters:
 			path: inc/autoliens.php
 
 		-
-			message: "#^Function extraire_attribut not found\\.$#"
-			count: 1
-			path: inc/autoliens.php
-
-		-
-			message: "#^Function inserer_attribut not found\\.$#"
-			count: 1
-			path: inc/autoliens.php
-
-		-
 			message: "#^Function _T not found\\.$#"
 			count: 1
 			path: inc/lien.php
@@ -187,7 +177,7 @@ parameters:
 
 		-
 			message: "#^Function url_de_base not found\\.$#"
-			count: 5
+			count: 3
 			path: inc/lien.php
 
 		-
@@ -364,16 +354,6 @@ parameters:
 			message: "#^Function textebrut not found\\.$#"
 			count: 2
 			path: inc/texte.php
-
-		-
-			message: "#^Function cache_get not found\\.$#"
-			count: 1
-			path: inc/textwheel.php
-
-		-
-			message: "#^Function cache_set not found\\.$#"
-			count: 1
-			path: inc/textwheel.php
 
 		-
 			message: "#^Function ecrire_fichier not found\\.$#"

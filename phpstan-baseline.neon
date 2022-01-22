@@ -76,7 +76,7 @@ parameters:
 			path: inc/lien.php
 
 		-
-			message: "#^Function generer_url_entite not found\\.$#"
+			message: "#^Function generer_objet_url not found\\.$#"
 			count: 3
 			path: inc/lien.php
 

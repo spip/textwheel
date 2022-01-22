@@ -393,7 +393,7 @@ function nettoyer_raccourcis_typo($texte, $connect = '') {
 				[$type, , $id, , , , ] = array_pad($match, 7, null);
 
 				if ($type) {
-					$url = generer_url_entite($id, $type, '', '', true);
+					$url = generer_objet_url($id, $type, '', '', true);
 					if (is_array($url)) {
 						[$type, $id] = $url;
 					}
@@ -635,7 +635,7 @@ function traiter_lien_implicite($ref, $texte = '', $pour = 'url', $connect = '')
 	}
 
 	if (!$url) {
-		$url = generer_url_entite($id, $type, $args, $ancre, $cible);
+		$url = generer_objet_url($id, $type, $args, $ancre, $cible);
 	}
 
 	if (!$url) {
@@ -644,7 +644,7 @@ function traiter_lien_implicite($ref, $texte = '', $pour = 'url', $connect = '')
 
 	if (is_array($url)) {
 		[$type, $id] = array_pad($url, 2, null);
-		$url = generer_url_entite($id, $type, $args, $ancre, $cible);
+		$url = generer_objet_url($id, $type, $args, $ancre, $cible);
 	}
 
 	if ($pour === 'url') {

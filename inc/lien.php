@@ -620,7 +620,7 @@ function liens_implicite_glose_dist($texte, $id, $type, $args, $ancre, $connect 
  * @return array|bool|string
  */
 function traiter_lien_implicite($ref, $texte = '', $pour = 'url', $connect = '') {
-	$cible = ($connect ?: $GLOBALS['lien_implicite_cible_public'] ?? null);
+	$cible = $GLOBALS['lien_implicite_cible_public'] ?? null;
 	if (!($match = typer_raccourci($ref))) {
 		return false;
 	}
@@ -635,7 +635,7 @@ function traiter_lien_implicite($ref, $texte = '', $pour = 'url', $connect = '')
 	}
 
 	if (!$url) {
-		$url = generer_objet_url($id, $type, $args, $ancre, $cible);
+		$url = generer_objet_url($id, $type, $args ?? '', $ancre ?? '', $cible, '', $connect);
 	}
 
 	if (!$url) {
@@ -644,7 +644,7 @@ function traiter_lien_implicite($ref, $texte = '', $pour = 'url', $connect = '')
 
 	if (is_array($url)) {
 		[$type, $id] = array_pad($url, 2, null);
-		$url = generer_objet_url($id, $type, $args, $ancre, $cible);
+		$url = generer_objet_url($id, $type, $args ?? '', $ancre ?? '', $cible, '', $connect);
 	}
 
 	if ($pour === 'url') {

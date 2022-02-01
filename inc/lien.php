@@ -635,7 +635,7 @@ function traiter_lien_implicite($ref, $texte = '', $pour = 'url', $connect = '')
 	}
 
 	if (!$url) {
-		$url = generer_objet_url($id, $type, $args ?? '', $ancre ?? '', $cible, '', $connect);
+		$url = generer_objet_url($id, $type, $args ?? '', $ancre ?? '', $cible, '', $connect ?? '');
 	}
 
 	if (!$url) {
@@ -644,7 +644,7 @@ function traiter_lien_implicite($ref, $texte = '', $pour = 'url', $connect = '')
 
 	if (is_array($url)) {
 		[$type, $id] = array_pad($url, 2, null);
-		$url = generer_objet_url($id, $type, $args ?? '', $ancre ?? '', $cible, '', $connect);
+		$url = generer_objet_url($id, $type, $args ?? '', $ancre ?? '', $cible, '', $connect ?? '');
 	}
 
 	if ($pour === 'url') {
@@ -852,7 +852,7 @@ function traiter_modeles($texte, $doublons = false, $echap = '', $connect = '', 
 					$params = str_replace($liens[0], $liens[1], $params);
 				}
 
-				$modele = inclure_modele($type, $id, $params, $lien, $connect, $env);
+				$modele = inclure_modele($type, $id, $params, $lien, $connect ?? '', $env);
 
 				// en cas d'echec,
 				// si l'objet demande a une url,
@@ -875,7 +875,7 @@ function traiter_modeles($texte, $doublons = false, $echap = '', $connect = '', 
 						$contexte['lien_hreflang'] = $lien['hreflang'];
 					}
 
-					$modele = recuperer_fond('modeles/dist', $contexte, [], $connect);
+					$modele = recuperer_fond('modeles/dist', $contexte, [], $connect ?? '');
 				}
 				// le remplacer dans le texte
 				if ($modele !== false) {

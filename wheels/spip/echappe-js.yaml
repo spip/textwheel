@@ -9,7 +9,7 @@
   replace:
     -
       type: all
-      replace: htmlspecialchars
+      replace: spip_htmlspecialchars
       is_callback: Y
     -
       type: all

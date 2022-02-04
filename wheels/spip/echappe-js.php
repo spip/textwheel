@@ -24,8 +24,8 @@ function echappe_anti_xss($match) {
 		and preg_match(',(data|script)\s*:,iS', $texte)
 	) {
 		$texte = nl2br(htmlspecialchars($texte));
-	} // on echappe si on a possiblement un attribut onxxx et que ca passe pas dans safehtml
-	elseif (
+	} elseif (
+		// on echappe si on a possiblement un attribut onxxx et que ca passe pas dans safehtml
 		stripos($texte, 'on') !== false
 		and preg_match(",\bon\w+\s*=,i", $texte)
 	) {

@@ -86,6 +86,9 @@ class SPIPTextWheelRuleset extends TextWheelRuleSet {
 		return find_in_path($file, 'wheels/');
 	}
 
+	/**
+	 * @return SPIPTextWheelRuleset
+	 */
 	public static function &loader($ruleset, $callback = '', $class = 'SPIPTextWheelRuleset') {
 
 		# memoization

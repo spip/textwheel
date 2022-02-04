@@ -146,7 +146,7 @@ class TextWheelRuleSet extends TextWheelDataSet {
 	 * @param array $ruleset
 	 * @param string $callback
 	 * @param string $class
-	 * @return class
+	 * @return TextWheelRuleSet
 	 */
 	public static function &loader($ruleset, $callback = '', $class = 'TextWheelRuleSet') {
 

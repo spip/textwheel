@@ -395,7 +395,7 @@ function traiter_tableau($bloc) {
 			// - <caption> et summary dans la premiere ligne (seulement si on n'a pas dépassé le premier thead) :
 			//   || caption | summary || (|summary est optionnel)
 			if (preg_match(',^\|\|([^|]*)(\|(.*))?$,sS', rtrim($ligne, '|'), $cap)) {
-				$cap = array_pad($cap, 4, null);
+				$cap = array_pad($cap, 4, '');
 				$l = 0;
 				$summary = '';
 				if ($describedby = trim($cap[3])) {

@@ -526,7 +526,7 @@ function traiter_tableau($bloc) {
 		$ligne = '';
 
 		for ($c = count($cols) - 1; $c >= 0; $c--) {
-			$attr = $numeric[$c];
+			$attr = $numeric[$c] ?? '';
 			$cell = trim($cols[$c]);
 			if ($cell == '<') {
 				$colspan++;

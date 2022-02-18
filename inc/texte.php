@@ -495,7 +495,7 @@ function traiter_tableau($bloc) {
 		$align = true;
 		for ($j = 0; $j < $k; $j++) {
 			$rowspans[$j][$i] = 1;
-			if ($align and preg_match('/^[{+-]*(?:\s|\d)*([.,]?)\d*[}]*$/', trim($lignes[$j][$i]), $r)) {
+			if ($align and preg_match('/^[{+-]*(?:\s|\d)*([.,]?)\d*[}]*$/', trim($lignes[$j][$i] ?? ''), $r)) {
 				if ($r[1]) {
 					$align = $r[1];
 				}
@@ -537,7 +537,7 @@ function traiter_tableau($bloc) {
 					$attr .= " colspan='$colspan'";
 					$colspan = 1;
 				}
-				if (($x = $rowspans[$l][$c]) > 1) {
+				if (($x = $rowspans[$l][$c] ?? null) > 1) {
 					$attr .= " rowspan='$x'";
 				}
 				$b = ($c == 0 and isset($hl[$l])) ? 'th' : 'td';

@@ -1,13 +1,13 @@
 <?php
 
 /***************************************************************************\
- *  SPIP, Système de publication pour l'internet                           *
+ *  SPIP, SystÃ¨me de publication pour l'internet                           *
  *                                                                         *
- *  Copyright © avec tendresse depuis 2001                                 *
- *  Arnaud Martin, Antoine Pitrou, Philippe Rivière, Emmanuel Saint-James  *
+ *  Copyright Â© avec tendresse depuis 2001                                 *
+ *  Arnaud Martin, Antoine Pitrou, Philippe RiviÃ¨re, Emmanuel Saint-James  *
  *                                                                         *
- *  Ce programme est un logiciel libre distribué sous licence GNU/GPL.     *
- *  Pour plus de détails voir le fichier COPYING.txt ou l'aide en ligne.   *
+ *  Ce programme est un logiciel libre distribuÃ© sous licence GNU/GPL.     *
+ *  Pour plus de dÃ©tails voir le fichier COPYING.txt ou l'aide en ligne.   *
 \***************************************************************************/
 
 namespace Spip\Core\Tests;
@@ -57,7 +57,7 @@ class TextwheelPropreTest extends TestCase {
 	 */
 	static function providerData($dir) {
 
-		$tests = preg_files(_DIR_PLUGIN_TW . "tests/data/{$dir}/", '\.txt$');
+		$tests = glob(_DIR_PLUGIN_TW . "tests/data/{$dir}/*.txt");
 
 		$texte = $expected = "";
 		$essais = array();
@@ -90,6 +90,28 @@ class TextwheelPropreTest extends TestCase {
 	 */
 	public function testPropre($source, $expected) {
 		$this->assertEquals($expected, static::propreNotes($source));
+	}
+
+	/**
+	 * Provider pour propre() sur du texte avec des raccourcis math
+	 * @return array
+	 */
+	public function providerPropreMath() {
+		return static::providerData('math');
+	}
+
+	/**
+	 * @dataProvider providerPropreMath
+	 */
+	public function testPropreMath($source, $expected) {
+
+		$result = static::propreNotes($source);
+
+		// on ignore width et height qui dependent de la police utilisee sur le serveur
+		$expected = preg_replace(',(width|height)="\d+",','', $expected);
+		$result = preg_replace(',(width|height)="\d+",','', $result);
+
+		$this->assertEquals($expected, $result);
 	}
 
 

@@ -897,7 +897,7 @@ function safe_ecrire_traiter_echap_script_dist($regs, $options) {
 		return highlight_string($regs[0], true);
 	}
 
-	$texte = nl2br(spip_htmlspecialchars($regs[0]));
+	$texte = nl2br(spip_htmlspecialchars($regs[0], ENT_NOQUOTES));
 	return "<code class=\"echappe-js\">$texte</code>";
 }
 

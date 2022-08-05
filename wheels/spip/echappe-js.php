@@ -23,7 +23,7 @@ function echappe_anti_xss($match) {
 		strpos($texte, ':') !== false
 		and preg_match(',(data|script)\s*:,iS', $texte)
 	) {
-		$texte = nl2br(spip_htmlspecialchars($texte));
+		$texte = nl2br(spip_htmlspecialchars($texte, ENT_NOQUOTES));
 	} elseif (
 		// on echappe si on a possiblement un attribut onxxx et que ca passe pas dans safehtml
 		stripos($texte, 'on') !== false
@@ -33,7 +33,7 @@ function echappe_anti_xss($match) {
 			$safehtml = charger_fonction('safehtml', 'inc', true);
 		}
 		if (!$safehtml or strlen($safehtml($texte)) !== strlen($texte)) {
-			$texte = nl2br(spip_htmlspecialchars($texte));
+			$texte = nl2br(spip_htmlspecialchars($texte, ENT_NOQUOTES));
 		}
 	}
 

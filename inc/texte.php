@@ -235,10 +235,29 @@ function typo($letexte, $echapper = true, $connect = null, $env = []) {
 		$env['espace_prive'] = test_espace_prive();
 	}
 
+	// Dans l'espace prive on se mefie de tout contenu dangereux
+	// https://core.spip.net/issues/3371
+	// et aussi dans l'espace public si la globale filtrer_javascript = -1
+	// https://core.spip.net/issues/4166
+	$secure_prefix = '';
+	if (
+		$interdire_script
+		or $GLOBALS['filtrer_javascript'] == -1
+		or (isset($env['espace_prive']) and $env['espace_prive'] and $GLOBALS['filtrer_javascript'] <= 0)
+		or (isset($env['wysiwyg']) and $env['wysiwyg'] and $GLOBALS['filtrer_javascript'] <= 0)
+	) {
+		$secure_prefix = ((!empty($env['espace_prive']) or !empty($env['wysiwyg'])) ? 'safe_ecrire_' :  'safe_public_');
+	}
+
 	$echapper = ($echapper ? 'TYPO' : false);
-	// Echapper les codes <html> etc
+	// Echapper les codes <html> etc, en les securisant si besoin
 	if ($echapper) {
-		$letexte = echappe_html($letexte, $echapper);
+		$callback_options = [
+		  'secure_prefix' => $secure_prefix,
+		  'connect' => $connect,
+		  'env' => $env,
+		];
+		$letexte = echappe_html($letexte, $echapper, false, '', '', $callback_options);
 	}
 
 	//
@@ -266,15 +285,11 @@ function typo($letexte, $echapper = true, $connect = null, $env = []) {
 		$letexte = interdire_scripts($letexte);
 	}
 
-	// Dans l'espace prive on se mefie de tout contenu dangereux
-	// https://core.spip.net/issues/3371
-	// et aussi dans l'espace public si la globale filtrer_javascript = -1
-	// https://core.spip.net/issues/4166
-	if (
-		$GLOBALS['filtrer_javascript'] == -1
-		or (isset($env['espace_prive']) and $env['espace_prive'] and $GLOBALS['filtrer_javascript'] <= 0)
-	) {
-		$letexte = echapper_html_suspect($letexte);
+	// dans un traitement par typo on ne peut pas avoir de html complexe issu de modeles
+	// pas de risque donc a echapper a la fin tout ce qui est suspect
+	// on regarde si il y a du suspect avant le retour des modeles qui sont encore echappes ici
+	if ($secure_prefix) {
+		$letexte = echapper_html_suspect($letexte, ['strict' => true], $connect, $env);
 	}
 
 	return $letexte;
@@ -811,6 +826,7 @@ function propre($t, $connect = null, $env = []) {
 	if (is_null($connect) and test_espace_prive()) {
 		$connect = '';
 		$interdire_script = true;
+		$env['espace_prive'] = true;
 	}
 
 	if (!$t) {
@@ -827,12 +843,24 @@ function propre($t, $connect = null, $env = []) {
 	if (
 		$interdire_script
 		or $GLOBALS['filtrer_javascript'] == -1
-		or (isset($env['espace_prive']) and $env['espace_prive'] and $GLOBALS['filtrer_javascript'] <= 0)
-		or (isset($env['wysiwyg']) and $env['wysiwyg'] and $GLOBALS['filtrer_javascript'] <= 0)
+		or (!empty($env['espace_prive']) and $GLOBALS['filtrer_javascript'] <= 0)
+		or (!empty($env['wysiwyg']) and $GLOBALS['filtrer_javascript'] <= 0)
 	) {
-		$t = echapper_html_suspect($t, false);
+		// les balises html et autres sont traitées une par une callback via la fonction safe_(ecrire|public)_echappe_xxx appropriée
+		$callback_options = [
+		  'secure_prefix' => (!empty($env['espace_prive']) or !empty($env['wysiwyg'])) ? 'safe_ecrire_' :  'safe_public_',
+		  'connect' => $connect,
+		  'env' => $env,
+		];
+		$t_echappe = echappe_html($t, '', false, '', '', $callback_options);
+		// l'echappement du html suspect est utile pour la moderation dans l'espace prive
+		// mais dans l'espace public on veut silencieusement le virer, on passe donc env ici
+		$t = echapper_html_suspect($t_echappe, ['strict' => false, 'texte_source_affiche' => $t, 'expanser_liens' => true], $connect, $env);
 	}
-	$t = echappe_html($t);
+	else {
+		$t = echappe_html($t, '', false, '', '', ['connect' => $connect, 'env' => $env]);
+	}
+
 	$t = expanser_liens($t, $connect, $env);
 
 	$t = traiter_raccourcis($t, (isset($env['wysiwyg']) and $env['wysiwyg']) ? true : false);
@@ -841,4 +869,46 @@ function propre($t, $connect = null, $env = []) {
 	$t = pipeline('post_echappe_html_propre', $t);
 
 	return $t;
+}
+
+function safe_ecrire_traiter_echap_html_dist($regs, $options) {
+	$html = $regs[3];
+	// bloquons les scripts ici avant eventuel echappement si trop suspect (ca evite de declencher echappement complet si une partie sera echappee par interdire scripts)
+	if ($GLOBALS['filtrer_javascript'] <= 0) {
+		$html = interdire_scripts($html);
+	}
+	$html = echapper_html_suspect($html, ['strict' => true, 'wrap_suspect' => "<code class='echappe-js'>"], $options['connect'] ?? '', $options['env'] ?? ['espace_prive' => true]);
+	return $html;
+}
+
+function safe_public_traiter_echap_html_dist($regs, $options) {
+	$html = $regs[3];
+
+	if ($GLOBALS['filtrer_javascript'] == -1) {
+		$html = safehtml($html);
+	}
+	// on ne fait rien : le conrenu sera sanitizé in fine
+	return $html;
+}
+
+function safe_ecrire_traiter_echap_script_dist($regs, $options) {
+	// rendre joli (et inactif) si c'est un script language=php
+	if (preg_match(',<script\b[^>]+php,ims', $regs[0])) {
+		return highlight_string($regs[0], true);
+	}
+
+	$texte = nl2br(spip_htmlspecialchars($regs[0]));
+	return "<code class=\"echappe-js\">$texte</code>";
+}
+
+function safe_public_traiter_echap_script_dist($regs, $options) {
+	// on peut enlever directement si mode parano
+	if ($GLOBALS['filtrer_javascript'] == -1) {
+		return '';
+	}
+
+	if (function_exists($f = 'traiter_echap_script') or function_exists($f = $f . '_dist')) {
+		return $f($regs, $options);
+	}
+	return '';
 }

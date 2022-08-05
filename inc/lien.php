@@ -155,7 +155,7 @@ function inc_lien_dist(
 
 	// si pas de modele dans le texte du lien, on peut juste passer typo sur le texte, c'est plus rapide
 	// les rares cas de lien qui encapsule un modele passe en dessous, c'est plus lent
-	if (traiter_modeles($texte, false, '', $connect, null, $env) == $texte) {
+	if (traiter_modeles($texte, false, '', $connect ?? '', null, $env) == $texte) {
 		$texte = typo($texte, true, $connect, $env);
 		$lien = '<a href="' . str_replace(
 			'"',
@@ -283,7 +283,7 @@ function expanser_liens($t, $connect = '', $env = []) {
 
 	// on passe a traiter_modeles la liste des liens reperes pour lui permettre
 	// de remettre le texte d'origine dans les parametres du modele
-	$t = traiter_modeles($t, false, false, $connect, expanser_un_lien('', 'sources'), $env);
+	$t = traiter_modeles($t, false, false, $connect ?? '', expanser_un_lien('', 'sources'), $env);
 
 	if (strpos($t, "\x1") !== false) {
 		$t = str_replace(["\x1\x5", "\x1\x6"], ['[', ']'], $t);
